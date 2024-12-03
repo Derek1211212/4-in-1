@@ -13,6 +13,8 @@ mysql-connector-python
 pandas
 apscheduler
 requests
+geopy
+
 
 
 
