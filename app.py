@@ -59,6 +59,8 @@ def get_db_connection():
 
 
 from datetime import datetime, timedelta
+# Explicitly set the templates folder to '/Templates'
+app = Flask(__name__, template_folder='Templates')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -129,8 +131,7 @@ def login_required(f):
 	        return f(*args, **kwargs)
 	    return decorated_function
 
-# Explicitly set the templates folder to '/Templates'
-app = Flask(__name__, template_folder='Templates')
+
 
 @app.route('/')
 def home():
