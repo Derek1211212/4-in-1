@@ -34,6 +34,9 @@ app = Flask(__name__)
 app.config.from_object(Config)
 app.logger.setLevel(logging.DEBUG)
 
+# Explicitly set the templates folder to '/Templates'
+app = Flask(__name__, template_folder='Templates')
+
 def get_db_connection():
     try:
         # Print database credentials for debugging
@@ -59,8 +62,7 @@ def get_db_connection():
 
 
 from datetime import datetime, timedelta
-# Explicitly set the templates folder to '/Templates'
-app = Flask(__name__, template_folder='Templates')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
