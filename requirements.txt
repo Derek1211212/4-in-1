@@ -12,5 +12,7 @@ Werkzeug==3.0.4
 mysql-connector-python
 pandas
 apscheduler
+requests
+
 
 
