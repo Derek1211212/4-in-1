@@ -11,4 +11,6 @@ PyMySQL==1.1.1
 Werkzeug==3.0.4
 mysql-connector-python
 pandas
+apscheduler
+
 
