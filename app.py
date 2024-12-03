@@ -129,10 +129,8 @@ def login_required(f):
 	        return f(*args, **kwargs)
 	    return decorated_function
 
-@app.route('/')
-def home():
-    return render_template('Homepage.html')
-
+# Explicitly set the templates folder to '/Templates'
+app = Flask(__name__, template_folder='Templates')
 
 @app.route('/')
 def home():
