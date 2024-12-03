@@ -14,6 +14,8 @@ pandas
 apscheduler
 requests
 geopy
+psycopg2-binary
+
 
 
 
