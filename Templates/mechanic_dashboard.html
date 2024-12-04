@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Mechanic Dashboard</title>
+
+   <style>
+    body {
+        overflow-x: hidden;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        animation: backgroundAnimation 10s ease infinite;
+    }
+
+    @keyframes backgroundAnimation {
+        0% { background-color: #f8f9fa; }
+        50% { background-color: #e9ecef; }
+        100% { background-color: #f8f9fa; }
+    }
+
+    .card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 10px;
+    }
+
+    .card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card img {
+        border-radius: 10px 10px 0 0;
+    }
+
+    #wrapper {
+        display: flex;
+        height: 100%;
+        transition: all 0.5s ease;
+        position: relative;
+    }
+
+    #sidebar-wrapper {
+        width: 190px;
+        background: #343a40;
+        height: 100%;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        transition: left 0.3s ease;
+    }
+
+    .toggled #sidebar-wrapper {
+        left: -190px;
+    }
+
+    #menu-toggle {
+        display: none;
+    }
+
+    #page-content-wrapper {
+        flex-grow: 1;
+        transition: margin-left 0.3s ease;
+        margin-left: 190px;
+        max-width: calc(100% - 190px);
+    }
+
+    .toggled #page-content-wrapper {
+        margin-left: 0;
+    }
+
+    @media (max-width: 480px) {
+        #menu-toggle {
+            display: flex;
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            z-index: 1001;
+        }
+
+        #sidebar-wrapper {
+            left: -190px;
+        }
+
+        .toggled #sidebar-wrapper {
+            left: 0;
+        }
+
+        #page-content-wrapper {
+            margin-left: 0;
+            max-width: 100%;
+        }
+    }
+
+    header {
+        padding: 10px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        width: 100%;
+        position: relative;
+        text-align: center;
+    }
+
+    footer {
+        background: #f8f9fa;
+        text-align: center;
+        padding: 10px;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+    }
+</style>
+
+</head>
+<body>
+    <div id="wrapper">
+        <div id="sidebar-wrapper">
+            <img src="{{ url_for('static', filename='images/icon.jpg') }}" alt="Logo" style="width: 170px; height: 150px; margin: 5% auto; display: block;">
+            <div class="sidebar-heading text-white">
+                <h5 class="text-center text-white">{{ mechanic_name }}</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="/dashboard" class="list-group-item list-group-item-action bg-dark text-white">Dashboard</a>
+                <a href="/add_customer" class="list-group-item list-group-item-action bg-dark text-white">Customers</a>
+                <a href="/services" class="list-group-item list-group-item-action bg-dark text-white">Services</a>
+                <a href="/inventory" class="list-group-item list-group-item-action bg-dark text-white">Inventory</a>
+                <a href="/vehicles" class="list-group-item list-group-item-action bg-dark text-white">Vehicle</a>
+                <a href="/settings" class="list-group-item list-group-item-action bg-dark text-white">Settings</a>
+                <br>
+                <a href="login" class="list-group-item list-group-item-action bg-danger text-white">Logout</a>
+            </div>
+        </div>
+
+        <div id="page-content-wrapper">
+            <header>
+                <h1 style="margin: 0; background-color: darkgray; color: white;">{{ mechanic_name }}</h1>
+                <button style="background-color: grey;" class="btn btn-primary" id="menu-toggle">&#9776;</button>
+            </header>
+            <div class="container-fluid">
+                <div class="row mt-4">
+                    <!-- Card 1 -->
+                    <div class="col-6 col-md-3">
+                        <a href="add_maintenance_log" class="card" style="text-decoration: none;">
+                            <img src="{{ url_for('static', filename='images/2.jpg') }}" class="card-img-top" alt="Image for Card 1" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 style="font-size: 14px; color: black; text-align: center;" class="card-title">Maintenance logs</h5>
+                            </div>
+                        </a>
+                    </div>
+
+
+               <!-- Card 2 -->
+                    <div class="col-6 col-md-3">
+                        <a href="/employees" class="card" style="text-decoration: none;">
+                            <img src="{{ url_for('static', filename='images/4.jpg') }}" class="card-img-top" alt="Image for Card 2" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 style="font-size: 14px; color: black; text-align: center;" class="card-title">Employee Profile</h5>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="col-6 col-md-3">
+                        <a href="/suppliers" class="card" style="text-decoration: none;">
+                            <img src="{{ url_for('static', filename='images/supplier.png') }}" class="card-img-top" alt="Image for Card 3" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 style="font-size: 14px; color: black; text-align: center;" class="card-title">Supplier(s) Contact</h5>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="col-6 col-md-3">
+                        <a href="/maintenance_due" class="card" style="text-decoration: none;">
+                            <img src="{{ url_for('static', filename='images/Due.png') }}" class="card-img-top" alt="Image for Card 4" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 style="font-size: 14px; color: black; text-align: center;" class="card-title">Maintenance Due</h5>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 5 -->
+                    <div class="col-6 col-md-3">
+                        <a href="/expenses" class="card" style="text-decoration: none;">
+                            <img src="{{ url_for('static', filename='images/Expenses.jpg') }}" class="card-img-top" alt="Image for Card 5" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 style="font-size: 14px; color: black; text-align: center;" class="card-title">Expenses</h5>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 6 -->
+                    <div class="col-6 col-md-3">
+                        <a href="/revenue" class="card" style="text-decoration: none;">
+                            <img src="{{ url_for('static', filename='images/revenue.jpg') }}" class="card-img-top" alt="Image for Card 6" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 style="font-size: 14px; color: black; text-align: center;" class="card-title">Revenue</h5>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 7 -->
+                    <div class="col-6 col-md-3">
+                        <a href="/analysis" class="card" style="text-decoration: none;">
+                            <img src="{{ url_for('static', filename='images/finance.jpg') }}" class="card-img-top" alt="Image for Card 7" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 style="font-size: 14px; color: black; text-align: center;" class="card-title">Financial Analysis</h5>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 8 -->
+                    <div class="col-6 col-md-3">
+                        <a href="/revenue_summary" class="card" style="text-decoration: none;">
+                            <img src="{{ url_for('static', filename='images/Sales history.webp') }}" class="card-img-top" alt="Image for Card 8" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 style="font-size: 14px; color: black; text-align: center;" class="card-title">Sales History</h5>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            <footer>
+                <p>Copyright &copy; Your Company Name</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+        });
+    </script>
+</body>
+</html>

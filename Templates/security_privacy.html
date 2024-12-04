@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security & Privacy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F5F5F5; /* Light background color */
+            margin: 0;
+            padding: 20px;
+        }
+
+        h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            opacity: 0; /* Start hidden */
+            transform: translateY(20px); /* Start from below */
+            transition: opacity 0.6s ease, transform 0.6s ease; /* Smooth transition */
+        }
+
+        /* Animation class */
+        .visible {
+            opacity: 1; /* Fully visible */
+            transform: translateY(0); /* Move to original position */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h3 class="fade-in">Security & Privacy</h3>
+        <p class="fade-in">Adjust your security and privacy settings</p>
+    </div>
+
+    <script>
+        // Function to check if an element is in the viewport
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        // Function to add 'visible' class to elements in viewport
+        function animateElements() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(el => {
+                if (isElementInViewport(el)) {
+                    el.classList.add('visible'); // Add visible class to show the element
+                }
+            });
+        }
+
+        // Add scroll and load event listeners
+        window.addEventListener('scroll', animateElements);
+        window.addEventListener('load', animateElements);
+
+        // Initial check in case elements are already in view
+        animateElements();
+    </script>
+</body>
+</html>

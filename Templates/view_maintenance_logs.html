@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Maintenance Logs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Optional for icons -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        input[type="date"],
+        input[type="submit"] {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        /* Table styling */
+        .table-responsive {
+            overflow-x: auto; /* Allows horizontal scrolling */
+            margin-top: 20px; /* Space above the table */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td a {
+            color: #007bff;
+            text-decoration: none;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        td form {
+            display: inline;
+        }
+
+        .flash-message {
+            color: green;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Maintenance Logs</h1>
+
+    {% if logs %}
+        <!-- Flash message for success notifications -->
+        <div class="flash-message">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+    {% endif %}
+
+    <!-- Filter Form -->
+    <form method="POST" action="{{ url_for('view_maintenance_logs') }}">
+        <label for="log_date_filter">Filter by Log Date:</label>
+        <input type="date" id="log_date_filter" name="log_date_filter">
+        <input type="submit" value="Filter">
+    </form>
+
+    <!-- Export Button -->
+    <form method="GET" action="{{ url_for('export_logs') }}">
+        <input type="submit" value="Export to Excel">
+    </form>
+
+    <!-- Table wrapped in a responsive div -->
+    <div class="table-responsive">
+        <table>
+         <thead>
+    <tr>
+        <th>Log ID</th>
+        <th>Vehicle VIN</th>
+        <th>Work Description</th>
+        <th>Parts Used</th>
+        <th>Cost of Parts</th>
+        <th>Labor Cost</th>
+        <th>Total Cost</th>
+        <th>Log Date</th>
+        <th>Next Scheduled Service</th>
+        <th>Service Type</th>
+        <th>Warranty Information</th>
+        <th>Mechanic Name</th> <!-- Mechanic Name Column -->
+        <th>Actions</th>
+    </tr>
+</thead>
+<tbody>
+    {% for log in logs %}
+    <tr>
+        <td>{{ log.log_id }}</td>
+        <td>{{ log.vin }}</td>
+        <td>{{ log.work_description }}</td>
+        <td>{{ log.parts_used }}</td>
+        <td>{{ log.cost_of_parts }}</td>
+        <td>{{ log.labor_cost }}</td>
+        <td>{{ log.total_cost }}</td>
+        <td>{{ log.log_date }}</td>
+        <td>{{ log.next_scheduled_service }}</td>
+        <td>{{ log.service_type }}</td>
+        <td>{{ log.warranty_information }}</td>
+        <td>{{ log.mechanic_name }}</td> <!-- Displaying Mechanic's Name -->
+        <td>
+            <a href="{{ url_for('edit_log', log_id=log.log_id) }}" title="Edit Log"><i class="fas fa-edit"></i> Edit</a>
+            <form method="POST" action="{{ url_for('delete_log', log_id=log.log_id) }}" style="display:inline;">
+                <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this log?');" title="Delete Log">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+        </table>
+    </div>
+</body>
+</html>

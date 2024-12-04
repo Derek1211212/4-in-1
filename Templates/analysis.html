@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/analysis.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif; /* Updated font for modern look */
+            background-color: #e9ecef; /* Match app background */
+            color: #343a40; /* Dark color for text */
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #17a2b8; /* Updated to match the app theme */
+            margin-bottom: 20px;
+        }
+
+        .results-section {
+            margin-top: 40px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+
+        #profitabilityResults {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .loading {
+            display: none;
+            margin-top: 20px;
+            font-size: 20px;
+            color: #17a2b8;
+        }
+
+        .error-message {
+            color: #dc3545; /* Updated for alerting */
+            margin-top: 20px;
+            display: none;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .analysis-button {
+            padding: 12px 24px;
+            background-color: #17a2b8;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .analysis-button:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Analysis Dashboard</h1>
+        
+        <div class="button-container">
+            <button class="analysis-button" onclick="performAnalysis('revenue')">Analysis for Revenue Trend</button>
+            <button class="analysis-button" onclick="performAnalysis('expense')">Analysis for Expense Trend</button>
+        </div>
+
+        <div class="loading">Loading...</div>
+        <div id="error-message" class="error-message"></div>
+
+        <div id="results" class="results-section">
+            <h2>Analysis Results</h2>
+            <canvas id="analysisChart"></canvas>
+            <div id="profitabilityResults"></div>
+            <h3>Service Sales Ranking</h3>
+            <div id="serviceSalesTable"></div>
+            <h3>Part Sales Ranking</h3>
+            <div id="partSalesTable"></div>
+        </div>
+    </div>
+
+    <script>
+        let analysisChart; // Store the chart instance
+
+        // Fetch and display all analyses on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            performAnalysis('revenue'); // Default to revenue on load
+            fetchServiceSalesRanking();
+            fetchPartSalesRanking();
+        });
+
+        function performAnalysis(type) {
+            // Clear previous results
+            clearResults();
+            document.querySelector('.loading').style.display = 'block'; // Show loading
+
+            fetch('/perform_analysis', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ analysis_type: type })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayResults(data, type);
+                fetchServiceSalesRanking(); // Fetch service sales ranking after analysis
+                fetchPartSalesRanking(); // Fetch part sales ranking after analysis
+                document.querySelector('.loading').style.display = 'none'; // Hide loading
+            })
+            .catch(error => {
+                document.querySelector('.loading').style.display = 'none'; // Hide loading
+                showError('Error: ' + error.message); // Display error
+            });
+        }
+
+        function fetchServiceSalesRanking() {
+            fetch('/service_sales_ranking') // Endpoint for service sales ranking
+            .then(response => response.json())
+            .then(data => {
+                displayServiceSalesRanking(data);
+            })
+            .catch(error => {
+                showError('Error fetching service sales ranking: ' + error.message);
+            });
+        }
+
+        function fetchPartSalesRanking() {
+            fetch('/part_sales_ranking') // Endpoint for part sales ranking
+            .then(response => response.json())
+            .then(data => {
+                displayPartSalesRanking(data);
+            })
+            .catch(error => {
+                showError('Error fetching part sales ranking: ' + error.message);
+            });
+        }
+
+        function clearResults() {
+            const ctx = document.getElementById('analysisChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Clear chart
+            document.getElementById('profitabilityResults').innerHTML = ''; // Clear profitability results
+            document.getElementById('serviceSalesTable').innerHTML = ''; // Clear service sales results
+            document.getElementById('partSalesTable').innerHTML = ''; // Clear part sales results
+            document.getElementById('error-message').innerHTML = ''; // Clear error message
+            
+            // Destroy existing chart if it exists
+            if (analysisChart) {
+                analysisChart.destroy();
+                analysisChart = null; // Reset the reference
+            }
+        }
+
+        function displayResults(data, type) {
+            const ctx = document.getElementById('analysisChart').getContext('2d');
+            const chartData = {
+                labels: data.months || [], // Ensure months are defined
+                datasets: [
+                    {
+                        label: `${type.charAt(0).toUpperCase() + type.slice(1)} Amount`,
+                        data: data.amounts || data.total_prices || [], // Ensure data is defined
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: false,
+                    },
+                    {
+                        label: 'Moving Average',
+                        data: data.moving_avgs || [], // Ensure moving averages are defined
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderDash: [5, 5],
+                        fill: false,
+                    }
+                ]
+            };
+
+            analysisChart = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: `${type.charAt(0).toUpperCase() + type.slice(1)} Trend Analysis`
+                        }
+                    }
+                }
+            });
+
+            // Display profitability results
+            const profitabilityResults = document.getElementById('profitabilityResults');
+            if (data.most_profitable_part) {
+                profitabilityResults.innerHTML = `
+                    <h3>Most Profitable Part:</h3>
+                    <p>Part ID: ${data.most_profitable_part.part_id}</p>
+                    <p>Total Sales: ${data.most_profitable_part.total_sales}</p>
+                    <p>Profitability: ${data.most_profitable_part.profitability}</p>
+                `;
+            } else {
+                profitabilityResults.innerHTML = `<p></p>`;
+            }
+        }
+
+        function displayServiceSalesRanking(data) {
+            const resultsDiv = document.getElementById('serviceSalesTable');
+            if (data.length === 0) {
+                resultsDiv.innerHTML = `<p>No service sales data available.</p>`;
+                return;
+            }
+
+            let tableHTML = `<table>
+                <tr>
+                    <th>Service ID</th>
+                    <th>Service Name</th>
+                    <th>Total Sales</th>
+                </tr>`;
+
+            data.forEach(item => {
+                tableHTML += `
+                    <tr>
+                        <td>${item.service_id}</td>
+                        <td>${item.service_name}</td>
+                        <td>${item.total_sales}</td>
+                    </tr>`;
+            });
+
+            tableHTML += `</table>`;
+            resultsDiv.innerHTML = tableHTML;
+        }
+
+        function displayPartSalesRanking(data) {
+            const resultsDiv = document.getElementById('partSalesTable');
+            if (data.length === 0) {
+                resultsDiv.innerHTML = `<p>No part sales data available.</p>`;
+                return;
+            }
+
+            let tableHTML = `<table>
+                <tr>
+                    <th>Part ID</th>
+                    <th>Part Name</th>
+                    <th>Total Sales</th>
+                </tr>`;
+
+            data.forEach(item => {
+                tableHTML += `
+                    <tr>
+                        <td>${item.part_id}</td>
+                        <td>${item.part_name}</td>
+                        <td>${item.total_sales}</td>
+                    </tr>`;
+            });
+
+            tableHTML += `</table>`;
+            resultsDiv.innerHTML = tableHTML;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.style.display = 'block';
+            errorDiv.textContent = message;
+        }
+    </script>
+</body>
+</html>

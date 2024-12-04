@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.6;
+        }
+
+        header {
+            width: 100%;
+            padding: 15px 20px;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        header nav {
+            display: flex;
+            gap: 30px;
+            margin-right: 30px;
+        }
+
+        header nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        header nav a:hover {
+            color: #f39c12;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            margin-right: 40px;
+        }
+
+        .hamburger div {
+            width: 30px;
+            height: 3px;
+            background-color: white;
+        }
+
+        .menu-mobile {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 3;
+        }
+
+        .menu-mobile a {
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .menu-mobile a:hover {
+            background-color: #2980b9;
+        }
+
+        .menu-mobile.show {
+            display: flex;
+        }
+
+        .content {
+            padding: 20px;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 0 auto;
+            max-width: 1200px;
+            flex-grow: 1;
+            align-items: center;
+        }
+
+        .service {
+            background: rgba(255, 255, 255, 0.9);
+            color: #2c3e50;
+            flex: 1 1 30%;
+            max-width: 30%;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeIn 0.8s ease forwards;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .service:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .service button:hover {
+            background-color: #1a6d98;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        footer {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        footer a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile-friendly adjustments */
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                text-align: left;
+            }
+
+            .logo {
+                font-size: 1.6rem;
+            }
+
+            header nav {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+
+            }
+
+            .menu-mobile {
+                display: none;
+            }
+
+            .menu-mobile.show {
+                display: flex;
+            }
+
+            .content {
+                padding: 10px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .service {
+                max-width: 80%;
+                flex: 1 1 100%;
+            }
+
+            footer {
+                padding: 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Image Element with ID -->
+    <div class="background-image" id="backgroundImage"></div>
+
+    <header>
+        <div class="logo">Mechanic Shop</div>
+
+        <div class="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+
+        <nav class="menu">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/services">Services</a>
+            <a href="/contact">Contact</a>
+        </nav>
+
+        <div class="menu-mobile">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/services">Services</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="service">
+            <h3>Mechanic Services</h3>
+            <p>Manage your mechanic shop, track appointments, and organize maintenance logs with ease.</p>
+            <a href="/login"><button>Login to Learn More</button></a>
+        </div>
+
+        <div class="service">
+            <h3>Spare Parts</h3>
+            <p>List and sell spare parts directly to your customers. Manage your inventory seamlessly.</p>
+            <a href="/login"><button>Login to Learn More</button></a>
+        </div>
+
+        <div class="service">
+            <h3>Towing Services</h3>
+            <p>Offer towing services to users in need. Create premium or free ads to showcase your services effectively</p>
+            <a href="/login"><button>Login to Learn More</button></a>
+        </div>
+
+        <div class="service">
+            <h3>Car Owner App</h3>
+            <p>Manage your car maintenance, appointments, and more with our app designed for car owners.</p>
+            <a href="/login"><button>Login to Learn More</button></a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Mechanic Shop | <a href="/privacy-policy">Privacy Policy</a></p>
+    </footer>
+
+    <script>
+        let backgroundImages = [
+            'static/images/back2.webp',
+            'static/images/back3.avif',
+            'static/images/back4.jpg',
+            'static/images/login_12.jpg'
+        ];
+        let currentImageIndex = 0;
+
+        function changeBackgroundImage() {
+            if (window.innerWidth < 768) {
+                document.getElementById("backgroundImage").style.backgroundImage = "url('static/images/back4.jpg')";
+            } else {
+                currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+                document.getElementById("backgroundImage").style.backgroundImage = "url('" + backgroundImages[currentImageIndex] + "')";
+            }
+        }
+
+        changeBackgroundImage();
+        setInterval(changeBackgroundImage, 5000);
+
+        window.addEventListener('resize', changeBackgroundImage);
+
+        function toggleMenu() {
+            document.querySelector('.menu-mobile').classList.toggle('show');
+        }
+    </script>
+</body>
+</html>

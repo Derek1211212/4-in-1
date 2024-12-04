@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #F5F5F5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: black;
+            animation: fadeIn 1s ease forwards; /* Fade-in animation for the header */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .settings-option {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition for hover effects */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .settings-option:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+        }
+
+        .settings-option i {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #5259f8; /* Icon color */
+            transition: color 0.3s;
+        }
+
+        .settings-option:hover i {
+            color: #f06; /* Change icon color on hover */
+        }
+
+        .settings-option h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .settings-option p {
+            font-size: 0.9em;
+            color: #666; /* Slightly gray color for the description */
+        }
+    </style>
+</head>
+<body>
+    <h1>Mechanic Settings</h1>
+    <div class="settings-container">
+        {% for mechanic in mechanics %}
+        <div class="settings-option" onclick="location.href='/mechanic/edit/{{ mechanic[0] }}'">
+            <i class="fas fa-pencil-alt"></i>
+            <h3>Edit {{ mechanic[1] }}</h3>
+            <p>Edit details for {{ mechanic[1] }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

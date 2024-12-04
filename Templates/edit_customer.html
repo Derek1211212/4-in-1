@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Customer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        /* Header Styles */
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        /* Footer Styles */
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        /* Container for form */
+        .container {
+            margin: 30px auto;
+            max-width: 800px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Customer Management System</h1>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="container">
+        <h2>Edit Customer</h2>
+        <form method="POST" action="{{ url_for('edit_customer', customer_id=customer.customer_id) }}">
+            <label for="full_name">Full Name:</label>
+            <input type="text" name="full_name" id="full_name" value="{{ customer.full_name }}" required><br>
+
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" name="phone_number" id="phone_number" value="{{ customer.phone_number }}" required><br>
+
+            <label for="email_address">Email Address:</label>
+            <input type="email" name="email_address" id="email_address" value="{{ customer.email_address }}" required><br>
+
+            <label for="address">Address:</label>
+            <input type="text" name="address" id="address" value="{{ customer.address }}" required><br>
+
+            <label for="communication_pref">Communication Preference:</label>
+            <input type="text" name="communication_pref" id="communication_pref" value="{{ customer.communication_pref }}" required><br>
+
+            <label for="emergency_contact_name">Emergency Contact Name:</label>
+            <input type="text" name="emergency_contact_name" id="emergency_contact_name" value="{{ customer.emergency_contact_name }}" required><br>
+
+            <label for="emergency_contact_number">Emergency Contact Number:</label>
+            <input type="text" name="emergency_contact_number" id="emergency_contact_number" value="{{ customer.emergency_contact_number }}" required><br>
+
+            <button type="submit">Save Changes</button>
+        </form>
+        <a href="{{ url_for('view_customers') }}">Back to All Customers</a>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 Customer Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

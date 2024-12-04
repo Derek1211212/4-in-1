@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Costs</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h1>Fuel Costs for Vehicle {{ license_plate_number }} - Year {{ year }}</h1>
+
+<div>
+    <h2>Fuel Costs Trend</h2>
+    <canvas id="fuelChart" width="400" height="200"></canvas>
+</div>
+
+<script>
+    // Data for Fuel Costs Chart
+    const fuelData = {
+        labels: [{% for entry in fuel_data %}"{{ entry.month }}-{{ entry.year }}"{% if not loop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Fuel Cost',
+            data: [{% for entry in fuel_data %}{{ entry.total_fuel_cost }}{% if not loop.last %},{% endif %}{% endfor %}],
+            borderColor: 'rgb(255, 99, 132)',
+            tension: 0.1,
+            fill: false
+        }]
+    };
+
+    const fuelConfig = {
+        type: 'line',
+        data: fuelData,
+    };
+
+    const fuelChart = new Chart(
+        document.getElementById('fuelChart'),
+        fuelConfig
+    );
+</script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+Date: 28/10/2024
+Time: 9:44
+Phone Number: +233501308957
+Message: Hello! This is a test message sent via Python.
+--------------------
+Date: 28/10/2024
+Time: 9:46
+Phone Number: +233501308957
+Message: Hello! This is a test message sent via Python.
+--------------------

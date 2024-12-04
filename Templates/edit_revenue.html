@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Revenue</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <style>
+        /* General page styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container for the form */
+        .container {
+            width: 60%;
+            margin: 40px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Heading */
+        h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Form styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Label styles */
+        label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        /* Input field and select dropdown styles */
+        input[type="number"], input[type="date"], select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #fafafa;
+        }
+
+        input[type="number"]:focus, input[type="date"]:focus, select:focus {
+            border-color: #4e73df;
+            outline: none;
+            background-color: #fff;
+        }
+
+        /* Button styles */
+        button {
+            background-color: #4e73df;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            align-self: center;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2e59d9;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            form {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Edit Revenue Record</h3>
+        <form method="POST">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" value="{{ revenue_record[7] }}" required>
+
+            <label for="customer">Customer:</label>
+            <select id="customer" name="customer">
+                <option value="" {% if not revenue_record[2] %}selected{% endif %}>Select Customer</option>
+                {% for customer in customers %}
+                    <option value="{{ customer[0] }}" {% if customer[0] == revenue_record[1] %}selected{% endif %}>
+                        {{ customer[1] }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="service">Service:</label>
+            <select id="service" name="service">
+                <option value="" {% if not revenue_record[3] %}selected{% endif %}>Select Service</option>
+                {% for service in services %}
+                    <option value="{{ service[0] }}" {% if service[0] == revenue_record[2] %}selected{% endif %}>
+                        {{ service[1] }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="service_price">Service Price:</label>
+            <input type="number" id="service_price" name="service_price" value="{{ revenue_record[3] }}" step="0.01">
+
+            <label for="part">Part:</label>
+            <select id="part" name="part">
+                <option value="" {% if not revenue_record[5] %}selected{% endif %}>Select Part</option>
+                {% for part in parts %}
+                    <option value="{{ part[0] }}" {% if part[0] == revenue_record[4] %}selected{% endif %}>
+                        {{ part[1] }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="part_price">Part Price:</label>
+            <input type="number" id="part_price" name="part_price" value="{{ revenue_record[5] }}" step="0.01">
+
+            <label for="total_price">Total Price:</label>
+            <input type="text" id="total_price" name="total_price" value="{{ (revenue_record[6] or 0)}}" >
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

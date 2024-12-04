@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Maintenance Log</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 28px;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        button {
+            background-color: #17a2b8;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            background-color: #17a2b8;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
+        <a class="navbar-brand" href="#">Mechanic Dashboard</a>
+    </nav>
+
+    <h1>Add Maintenance Log</h1>
+
+    <form method="POST" action="{{ url_for('add_maintenance_log') }}">
+        <!-- Vehicle VIN -->
+        <label for="vin">Vehicle VIN:</label>
+        <input type="text" id="vin" name="vin" required>
+
+        <!-- Work Description -->
+        <label for="work_description">Work Description:</label>
+        <textarea id="work_description" name="work_description" required></textarea>
+
+        <!-- Parts Used -->
+        <label for="parts_used">Parts Used:</label>
+        <input type="text" id="parts_used" name="parts_used">
+
+        <!-- Cost of Parts -->
+        <label for="cost_of_parts">Cost of Parts:</label>
+        <input type="number" id="cost_of_parts" name="cost_of_parts" step="0.01">
+
+        <!-- Labor Cost -->
+        <label for="labor_cost">Labor Cost:</label>
+        <input type="number" id="labor_cost" name="labor_cost" step="0.01">
+
+        <!-- Total Cost -->
+        <label for="total_cost">Total Cost:</label>
+        <input type="number" id="total_cost" name="total_cost" step="0.01" required>
+
+        <!-- Log Date -->
+        <label for="log_date">Log Date:</label>
+        <input type="date" id="log_date" name="log_date" required>
+
+        <!-- Next Scheduled Service -->
+        <label for="next_scheduled_service">Next Scheduled Service:</label>
+        <input type="date" id="next_scheduled_service" name="next_scheduled_service" required>
+
+        <!-- Service Type -->
+        <label for="service_type">Service Type:</label>
+        <select id="service_type" name="service_type" required>
+            <option value="">Select a service type</option>
+            {% for service in services %}
+                <option value="{{ service[0] }}">{{ service[1] }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Warranty Information -->
+        <label for="warranty_information">Warranty Information:</label>
+        <textarea id="warranty_information" name="warranty_information"></textarea>
+
+        <!-- Select Mechanics -->
+        <label for="mechanic_ids">Select Mechanics:</label>
+        <select id="mechanic_ids" name="mechanic_ids" multiple required>
+            {% for mechanic in mechanics %}
+                <option value="{{ mechanic[0] }}">{{ mechanic[1] }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Add Maintenance Log</button>
+    </form>
+
+<a href="{{ url_for('view_maintenance_logs') }}">
+        <button class="view-logs-button">View Maintenance Logs</button>
+    <footer>
+        <p>&copy; 2024 Your Company Name</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#mechanic_ids').select2();
+        });
+    </script>
+</body>
+</html>

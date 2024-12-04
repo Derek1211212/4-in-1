@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part Not Found</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #d9534f;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            text-decoration: none;
+            color: #337ab7;
+        }
+    </style>
+</head>
+<body>
+    <h1>Part Not Found</h1>
+    <p>We're sorry, but the part you are looking for does not exist.</p>
+    <p><a href="{{ url_for('shopping_page') }}">Go back to the main page</a></p>
+</body>
+</html>

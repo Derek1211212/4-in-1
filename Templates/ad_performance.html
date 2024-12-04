@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Performance</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Basic reset and styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background-color: #333;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        /* Container for content */
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Title */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Filter Section */
+        .filter-container {
+            display: inline-block;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-container label {
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .filter-container select,
+        .filter-container input {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .filter-container button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .filter-container button:hover {
+            background-color: #218838;
+        }
+
+        /* Stats Cards */
+        .card-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .card-container .card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 35%;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* Performance Graph */
+        .graph-container {
+            margin-top: 40px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 400px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            margin-top: 40px;
+        }
+
+    .reviews-container {
+        margin-top: 40px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .reviews-container h2 {
+        margin-bottom: 15px;
+        font-size: 22px;
+        color: #333;
+    }
+
+    .reviews-list {
+        list-style-type: none;
+    }
+
+    .review-item {
+        margin-bottom: 20px;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .review-item p {
+        margin: 5px 0;
+    }
+
+    .review-item strong {
+        color: #555;
+    }
+
+        
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/contact">Contact</a>
+        <a href="/uploaded-ads">My Uploaded Ads</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Ad Performance for: {{ ad_name }}</h1>
+
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <div>
+                <label for="stat-type">Select Stat:</label>
+                <select id="stat-type">
+                    <option value="impression">Impressions</option>
+                    <option value="click">Visitors</option>
+                    <option value="contact_reveal">Phone Number Reveals</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="date-range">Select Date Range:</label>
+                <input type="date" id="start-date">
+                <input type="date" id="end-date">
+            </div>
+
+            <button class="btn-filter" onclick="filterStats()">Filter</button>
+        </div>
+
+        <!-- Stats Cards Container -->
+        <div class="card-container">
+            <div class="card card-impressions">
+                <h3>Impressions: <span id="impressions-stat">0</span></h3>
+            </div>
+            <div class="card card-visitors">
+                <h3>Visitors: <span id="visitors-stat">0</span></h3>
+            </div>
+            <div class="card card-phone-reveals">
+                <h3>Phone Number Reveals: <span id="phone-reveals-stat">0</span></h3>
+            </div>
+        </div>
+
+        <!-- Performance Graph -->
+        <div class="graph-container">
+            <canvas id="performanceGraph"></canvas>
+        </div>
+    </div>
+
+
+    <!-- Reviews Section -->
+<div class="reviews-container">
+    <h2>Reviews</h2>
+    {% if reviews %}
+        <ul class="reviews-list">
+            {% for review in reviews %}
+                <li class="review-item">
+                    <p><strong>Rating:</strong> {{ review['rating'] }}/5</p>
+                    <p>{{ review['review_text'] }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No reviews available for this ad.</p>
+    {% endif %}
+</div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Your App Name</p>
+    </footer>
+
+    <script>
+        let chart; // Declare a global Chart.js instance
+
+        // Function to update the graph with new data
+        function updateGraph(data) {
+            if (!data || !data.labels || !data.values) {
+                console.error("Invalid graph data:", data);
+                return;
+            }
+
+            const ctx = document.getElementById("performanceGraph").getContext("2d");
+
+            // Update or create chart
+            if (chart) {
+                chart.data.labels = data.labels;
+                chart.data.datasets[0].data = data.values;
+                chart.update();
+            } else {
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Performance Stats',
+                            data: data.values,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { title: { display: true, text: 'Month' } },
+                            y: { title: { display: true, text: 'Count' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Function to filter stats based on user input
+        function filterStats() {
+            const adId = "{{ ad_id }}"; // Make sure this value is populated correctly
+            const statType = document.getElementById("stat-type").value;
+            const startDate = document.getElementById("start-date").value;
+            const endDate = document.getElementById("end-date").value;
+
+            fetch(`/get-performance-stats?ad_id=${adId}&stat_type=${statType}&start_date=${startDate}&end_date=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Performance Stats:", data); // Debugging the response
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById("impressions-stat").textContent = data.impressions;
+                        document.getElementById("visitors-stat").textContent = data.visitors;
+                        document.getElementById("phone-reveals-stat").textContent = data.phone_reveals;
+                        updateGraph(data.graph_data);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching performance stats:", error);
+                });
+        }
+
+        // Initialize with default stats
+        window.onload = filterStats;
+    </script>
+
+</body>
+
+</html>

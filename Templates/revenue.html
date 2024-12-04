@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Revenue</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin-top: 50px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        .form-group label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            box-shadow: none;
+            margin-bottom: 15px;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        .btn {
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn:active {
+            background-color: #004085;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Record Revenue</h2>
+    <form method="POST">
+        <!-- Customer Selection -->
+        <div class="form-group">
+            <label for="customer_id">Customer</label>
+            <select class="form-control" id="customer_id" name="customer_id" required>
+                <option value="">Select Customer</option>
+                {% for customer in customers %}
+                    <option value="{{ customer[0] }}">{{ customer[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Services Selection (Checkboxes) -->
+        <div class="form-group">
+            <label for="service_ids">Services</label>
+            <div>
+                {% for service in services %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="{{ service[0] }}" data-price="{{ service[2] }}" id="service_{{ service[0] }}" name="service_ids">
+                        <label class="form-check-label" for="service_{{ service[0] }}">
+                            {{ service[1] }} - {{ service[2] }} GHS
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+
+
+
+        <!-- Parts Selection (Checkboxes) -->
+        <div class="form-group">
+            <label for="part_ids">Parts</label>
+            <div>
+                {% for part in parts %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="{{ part[0] }}" data-price="{{ part[2] }}" id="part_{{ part[0] }}" name="part_ids">
+                        <label class="form-check-label" for="part_{{ part[0] }}">
+                            {{ part[1] }} - {{ part[2] }} GHS
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Total Price Calculation -->
+        <div class="form-group">
+            <label for="total_price">Total Price (Editable)</label>
+            <input type="number" class="form-control" id="total_price" name="total_price" step="0.01" min="0" value="0.00" required>
+        </div>
+
+        <!-- Revenue Date -->
+        <div class="form-group">
+            <label for="date">Revenue Date</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Record Revenue</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var totalServicePrice = 0;
+        var totalPartPrice = 0;
+
+        // Update Service Price when services are selected or deselected
+        $('input[name="service_ids"]').change(function() {
+            totalServicePrice = 0;
+            $('input[name="service_ids"]:checked').each(function() {
+                totalServicePrice += parseFloat($(this).data('price') || 0);
+            });
+            updateTotalPrice();  // Update the total price
+        });
+
+        // Update Part Price when parts are selected or deselected
+        $('input[name="part_ids"]').change(function() {
+            totalPartPrice = 0;
+            $('input[name="part_ids"]:checked').each(function() {
+                totalPartPrice += parseFloat($(this).data('price') || 0);
+            });
+            updateTotalPrice();  // Update the total price
+        });
+
+        // Update the total price field (sum of service and part prices)
+        function updateTotalPrice() {
+            var total = totalServicePrice + totalPartPrice;
+            $('#total_price').val(total.toFixed(2));  // Update the total price field
+        }
+    });
+</script>
+
+</body>
+</html>

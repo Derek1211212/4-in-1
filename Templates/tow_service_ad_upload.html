@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tow Service Ad Upload</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        /* Basic Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Styling */
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        header nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        header nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            margin: 70px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        textarea {
+            height: 150px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        button#paystackButton {
+            background-color: #ffb600;
+            display: none;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Tow Service</h1>
+        <nav>
+            <a href="/tow_service_ad_upload">Home</a>
+            <a href="/my_ads">My Ads</a>
+            <a href="/logout">Log out</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2>Post a Tow Service Ad</h2>
+        <form id="adForm" enctype="multipart/form-data">
+            <label for="title">Company Name:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+
+            <label for="location">Location:</label>
+            <button type="button" onclick="generateLocation()">Get Location</button>
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+
+
+
+            <label for="location_detail">Location Detail:</label>
+            <input type="text" id="location_detail" name="location_detail" required>
+
+            <label for="contact">Contact:</label>
+            <input type="text" id="contact" name="contact" required>
+
+            
+            <label for="premium">Ad Type:</label>
+            <select id="premium" name="is_premium" onchange="togglePaystackButton()">
+                <option value="0">Free</option>
+                <option value="1">Premium</option>
+            </select>
+            
+            <label for="image1">Image 1:</label>
+            <input type="file" id="image1" name="image1" accept="image/*" required>
+
+            <label for="image2">Image 2:</label>
+            <input type="file" id="image2" name="image2" accept="image/*">
+
+            <button type="button" id="submitAd" onclick="submitFreeAd()">Submit Free Ad</button>
+            <button type="button" id="paystackButton" onclick="payWithPaystack()">Pay with Paystack for Premium</button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2024 Your App Name. All Rights Reserved.
+    </footer>
+
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script>
+        function togglePaystackButton() {
+            const isPremium = document.getElementById("premium").value === "1";
+            document.getElementById("submitAd").style.display = isPremium ? "none" : "inline";
+            document.getElementById("paystackButton").style.display = isPremium ? "inline" : "none";
+        }
+
+        function generateLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    document.getElementById('latitude').value = position.coords.latitude;
+                    document.getElementById('longitude').value = position.coords.longitude;
+                    alert("Location captured successfully!");
+                }, () => {
+                    alert("Unable to retrieve location.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+      async function submitFreeAd() {
+    const formData = new FormData(document.getElementById("adForm"));
+    formData.append("is_premium", 0);
+
+    const response = await fetch("/api/upload_free_ad", {
+        method: "POST",
+        body: formData,
+    });
+
+    const data = await response.json();
+    alert(data.message);
+
+    // Move the clearForm() inside the function after the response is successful
+    if (data.message === "Ad uploaded successfully.") {
+        clearForm();
+    }
+}
+        function payWithPaystack() {
+            const handler = PaystackPop.setup({
+                key: 'pk_test_908e4efd888715c9e10cb5cee4d6f6d0fc6448cd',
+                email: 'derickbill3@gmail.com',
+                amount: 5000,
+                currency: 'GHS',
+                callback: function(response) {
+                    alert('Payment successful. Transaction ID: ' + response.reference);
+                    submitPremiumAd();
+                },
+                onClose: function() {
+                    alert('Payment canceled.');
+                }
+            });
+            handler.openIframe();
+        }
+
+        async function submitPremiumAd() {
+    const formData = new FormData(document.getElementById("adForm"));
+    formData.append("is_premium", 1);
+
+    const response = await fetch("/api/upload_premium_ad", {
+        method: "POST",
+        body: formData,
+    });
+
+    const data = await response.json();
+    alert(data.message);
+
+    // Move the clearForm() inside the function after the response is successful
+    if (data.message === "Ad uploaded successfully.") {
+        clearForm();
+    }
+}
+
+function clearForm() {
+    document.getElementById("adForm").reset();  // This will reset all form fields
+    document.getElementById("paystackButton").style.display = "none";
+    document.getElementById("submitAd").style.display = "inline";
+}
+    </script>
+
+    <script>
+        
+
+        function clearForm() {
+    document.getElementById("adForm").reset();  // This will reset all form fields
+    // If you want to also hide the Paystack button after submission, you can add:
+    document.getElementById("paystackButton").style.display = "none";
+    document.getElementById("submitAd").style.display = "inline";
+}
+
+    </script>
+</body>
+</html>

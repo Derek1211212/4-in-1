@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Ads</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<style>
+/* Basic Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.navbar {
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+}
+
+.navbar a {
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.navbar a:hover {
+    background-color: #575757;
+}
+
+.ads-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.ad-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.ad-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+.ad-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.ad-card h3 {
+    font-size: 20px;
+    color: #333;
+}
+
+.ad-card p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.ad-card a {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.ad-card a:hover {
+    background-color: #0056b3;
+}
+
+/* Performance link styling */
+.ad-card .view-performance {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.ad-card .view-performance:hover {
+    background-color: #218838;
+}
+
+p a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .ad-cards {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<body>
+
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/contact">Contact</a>
+    </div>
+
+    <div class="container">
+        <h1>My Towing Ads</h1>
+        <div class="ads-list">
+            {% if ads %}
+                <div class="ad-cards">
+                    {% for ad in ads %}
+                        <div class="ad-card">
+                            {% if ad[6] %}
+                                <img src="{{ url_for('static', filename='images/' + ad[6]) }}" alt="Ad Image">
+                            {% endif %}
+                            <h3>{{ ad[1] }}</h3>
+                            <p>{{ ad[2] }}</p>
+                            <p><strong>Location:</strong> Latitude: {{ ad[3] }}, Longitude: {{ ad[4] }}</p>
+                            <p><strong>Premium Ad:</strong> {{ 'Yes' if ad[5] else 'No' }}</p>
+                            <a href="{{ url_for('edit_towing_ad_info', ad_id=ad[0]) }}">Edit</a>
+
+                            <!-- Performance View Link -->
+                            <a href="{{ url_for('ad_performance', ad_id=ad[0]) }}" class="view-performance">View Performance</a>
+
+                                <!-- Delete Button -->
+                            <form action="{{ url_for('delete_towing_ad', ad_id=ad[0]) }}" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Are you sure you want to delete this ad?');" style="background-color: #dc3545; color: white; padding: 10px 15px; border-radius: 5px; border: none;">Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No ads available. <a href="{{ url_for('add_towing_ad') }}">Add a new ad</a>.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

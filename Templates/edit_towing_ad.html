@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Towing Ad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Towing Ad</h1>
+        <form action="{{ url_for('update_towing_ad_info', ad_id=ad[0]) }}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" value="{{ ad[1] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" required>{{ ad[2] }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="latitude">Latitude</label>
+                <input type="text" name="latitude" value="{{ ad[3] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="longitude">Longitude</label>
+                <input type="text" name="longitude" value="{{ ad[4] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contact">Contact</label>
+                <input type="text" name="contact" value="{{ ad[7] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location_detail">Location Details</label>
+                <input type="text" name="location_detail" value="{{ ad[8] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="image1">Image 1</label>
+                <input type="file" name="image1">
+                {% if ad[5] %}
+                    <img src="{{ url_for('static', filename='images/' + ad[5]) }}" alt="Ad Image 1">
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="image2">Image 2</label>
+                <input type="file" name="image2">
+                {% if ad[6] %}
+                    <img src="{{ url_for('static', filename='images/' + ad[6]) }}" alt="Ad Image 2">
+                {% endif %}
+            </div>
+
+            <button type="submit">Update Ad</button>
+        </form>
+    </div>
+</body>
+</html>

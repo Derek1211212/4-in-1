@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 40px 0; /* Spacing between header and settings options */
+            color: #333; /* Color for the header */
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto; /* Center the container */
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .settings-option {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .settings-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .settings-option i {
+            font-size: 2em;
+            color: #5259f8;
+            margin-bottom: 10px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .settings-option h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin: 10px 0 0;
+            font-weight: 600;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .settings-option p {
+            font-size: 0.9em;
+            color: #666;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        footer {
+            background-color: #17a2b8; /* Footer color */
+            color: white; /* Footer text color */
+            padding: 10px 0; /* Padding for footer */
+            text-align: center; /* Center footer text */
+            position: relative; /* Position footer */
+            bottom: 0; /* Position at the bottom */
+            width: 100%; /* Full width */
+        }
+
+        .navbar {
+            background-color: black; /* Black navbar */
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important; /* White text for navbar */
+        }
+
+        .nav-link:hover {
+            color: #17a2b8 !important; /* Change color on hover */
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#">Settings Manager</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Employees</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Mechanic Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Security</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Support</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Legal</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<h1>Settings</h1>
+<div class="settings-container">
+    <div class="settings-option" onclick="location.href='/employees'">
+        <i class="fas fa-user-cog"></i>
+        <h3>Add Employees</h3>
+        <p>Manage your Employee Profiles</p>
+    </div>
+    <div class="settings-option" onclick="location.href='/mechanic-settings'">
+        <i class="fas fa-tools"></i>
+        <h3>Mechanic-Specific Settings</h3>
+        <p>Configure your working hours and services</p>
+    </div>
+    <div class="settings-option" onclick="location.href='/security-privacy'">
+        <i class="fas fa-lock"></i>
+        <h3>Security & Privacy</h3>
+        <p>Adjust your security and privacy settings</p>
+    </div>
+    <div class="settings-option" onclick="location.href='/support'">
+        <i class="fas fa-question-circle"></i>
+        <h3>Support & Help</h3>
+        <p>Get assistance and support resources</p>
+    </div>
+    <div class="settings-option" onclick="location.href='/legal'">
+        <i class="fas fa-gavel"></i>
+        <h3>Legal Information</h3>
+        <p>Terms of service and privacy policy</p>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2024 Settings Manager. All Rights Reserved.</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

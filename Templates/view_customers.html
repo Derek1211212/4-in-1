@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        /* Header Styles */
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        /* Footer Styles */
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        .container {
+            margin: 30px auto;
+            max-width: 1000px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        .form-inline {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            flex: 1;
+            max-width: 300px;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        .btn {
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px;
+        }
+        th {
+            background-color: #e9ecef;
+        }
+        /* Horizontal scroll for table */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Customer Management System</h1>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="container">
+        <h2>Customer List</h2>
+
+        <!-- Search form -->
+        <form method="POST" action="{{ url_for('view_customers') }}" class="form-inline">
+            <input type="text" class="form-control" name="surname" placeholder="Search by surname">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        <!-- Customer table with horizontal scroll -->
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Full Name</th>
+                        <th>Phone Number</th>
+                        <th>Email Address</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.customer_id }}</td>
+                        <td>{{ customer.full_name }}</td>
+                        <td>{{ customer.phone_number }}</td>
+                        <td>{{ customer.email_address }}</td>
+                        <td>
+                            <!-- Edit Button -->
+                            <a href="{{ url_for('edit_customer', customer_id=customer.customer_id) }}" class="btn btn-warning btn-sm">Edit</a>
+                            
+                            <!-- Delete Button (Form) -->
+                            <form action="{{ url_for('delete_customer', customer_id=customer.customer_id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this customer?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 Customer Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

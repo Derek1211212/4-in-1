@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Flash Messages */
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .flash {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .flash.success {
+            background-color: #28a745;
+        }
+
+        .flash.error {
+            background-color: #dc3545;
+        }
+
+        .flash.warning {
+            background-color: #ffc107;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        td:hover {
+            background-color: #f1f1f1;
+        }
+
+        table tr:nth-child(even) td {
+            background-color: #f2f2f2;
+        }
+
+        /* Action Button Styling */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: white;
+            display: inline-block;
+            margin: 5px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 6px 12px;
+            }
+
+            /* Make the table horizontally scrollable */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 700px; /* Minimum width to prevent table from being too narrow */
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inventory</h1>
+
+        <!-- Display flash messages (Success or Error) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="flash {{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Add Inventory Button -->
+        <a href="{{ url_for('add_inventory') }}" class="btn btn-primary">Add Inventory</a>
+
+        <!-- Table Container with Horizontal Scroll -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Supplier Name</th>
+                        <th>Cost</th>
+                        <th>Reorder Level</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if items %}
+                        {% for item in items %}
+                            <tr>
+                                <td>{{ item['name'] }}</td>
+                                <td>{{ item['quantity'] }}</td>
+                                <td>{{ item['supplier_name'] }}</td>
+                                <td>{{ item['cost'] }}</td>
+                                <td>{{ item['reorder_level'] }}</td>
+                                <td>{{ item['part_description'] }}</td>
+                                <td>
+                                    <!-- Add action buttons (Edit/Delete) if needed -->
+                                    <a href="{{ url_for('edit_inventory', item_id=item['inventory_id']) }}" class="btn btn-warning">Edit</a>
+                                    <a href="{{ url_for('delete_inventory', item_id=item['inventory_id']) }}" class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7">No inventory items found.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Inventory Management</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure body covers full height */
+        }
+
+        /* Navigation Bar */
+        nav {
+            background-color: #343a40; /* Dark background */
+            padding: 15px;
+        }
+
+        nav a {
+            color: white; /* White text for nav links */
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
+
+        .container {
+            flex-grow: 1; /* Allow the container to grow */
+            width: 90%;
+            max-width: 700px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin: 20px auto; /* Center the container */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Button styling */
+        .btn {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 10px 15px;
+            background-color: #17a2b8; /* Button color */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #138496; /* Darker shade on hover */
+        }
+
+        /* Footer styling */
+        footer {
+            background-color: #17a2b8; /* Footer color */
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/appointments">Appointments</a>
+        <a href="/services">Services</a>
+        <a href="/inventory">Inventory</a>
+        <a href="/settings">Settings</a>
+    </nav>
+
+    <div class="container">
+        <h1>Inventory Management</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Part Name</th>
+                    <th>Quantity</th>
+                    <th>Supplier Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in inventory_items %}
+                <tr>
+                    <td>{{ item['name'] }}</td>
+                    <td>{{ item['quantity'] }}</td>
+                    <td>{{ item['supplier_name'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p><a href="{{ url_for('mechanic_dashboard') }}" class="btn">Back to Dashboard</a></p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Your Company Name</p>
+    </footer>
+</body>
+</html>

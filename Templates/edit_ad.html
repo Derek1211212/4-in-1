@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Ad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <style>
+     body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="file"] {
+    padding: 5px;
+}
+
+button[type="submit"] {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #4cae4c;
+}
+   
+
+
+    </style>
+</head>
+<body>
+
+    <h1>Edit Ad</h1>
+    <form action="{{ url_for('update_ad', ad_id=ad['ad_id']) }}" method="POST" enctype="multipart/form-data">
+        <label for="part_category">Category:</label>
+        <select name="part_category" id="part_category">
+            {% for category in part_categories %}
+                <option value="{{ category }}" {% if category == ad['part_category'] %}selected{% endif %}>{{ category }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="part_name">Part Name:</label>
+        <input type="text" name="part_name" id="part_name" value="{{ ad['part_name'] }}"><br>
+
+        <label for="price">Price (GHS):</label>
+        <input type="number" name="price" id="price" value="{{ ad['price'] }}" step="0.01"><br>
+
+        <label for="image1">Image 1:</label>
+        <input type="file" name="image1" id="image1"><br>
+        <label for="image2">Image 2:</label>
+        <input type="file" name="image2" id="image2"><br>
+        <label for="image3">Image 3:</label>
+        <input type="file" name="image3" id="image3"><br>
+        <label for="image4">Image 4:</label>
+        <input type="file" name="image4" id="image4"><br>
+
+        <button type="submit">Update Ad</button>
+    </form>
+
+</body>
+</html>

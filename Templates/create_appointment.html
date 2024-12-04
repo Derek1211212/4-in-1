@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Appointment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> <!-- Link to external CSS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+   /* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    color: #333;
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Form Styles */
+form {
+    background-color: #fff;
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #555;
+}
+
+select,
+input[type="date"] {
+    padding: 10px;
+    font-size: 1rem;
+    color: #555;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
+    transition: border-color 0.3s;
+}
+
+select:focus,
+input[type="date"]:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Button Styles */
+button[type="submit"] {
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+button[type="submit"]:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    form {
+        max-width: 100%;
+        padding: 30px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    button[type="submit"] {
+        font-size: 0.9rem;
+    }
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+    
+</style>
+
+</head>
+<body>
+    <h1>Create Appointment</h1> <!-- Header fixed at the top -->
+    <form id="appointment-form" method="POST" action="{{ url_for('create_appointment') }}">
+        <label for="mechanic">Select Mechanic:</label>
+        <select id="mechanic" name="mechanic_id" required>
+            <option value="">-- Select Mechanic --</option>
+            {% for mechanic in mechanics %}
+                <option value="{{ mechanic.mechanic_id }}">{{ mechanic.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="customer">Select Customer:</label>
+        <select id="customer" name="customer_id" required>
+            <option value="">-- Select Customer --</option>
+            {% for customer in customers %}
+                <option value="{{ customer.customer_id }}">{{ customer.full_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="vehicle">Select Vehicle:</label>
+        <select id="vehicle" name="vehicle_id" required>
+            <option value="">-- Select Vehicle --</option>
+        </select>
+
+        <label for="service">Select Service:</label>
+        <select id="service" name="service_id" required>
+            <option value="">-- Select Service --</option>
+        </select>
+
+        <label for="appointment_date">Appointment Date:</label>
+        <input type="date" id="appointment_date" name="appointment_date" required>
+
+        <button type="submit">Create Appointment</button>
+    </form>
+
+    <script>
+        $(document).ready(function () {
+            $('#mechanic').change(function () {
+                const mechanicId = $(this).val();
+                if (mechanicId) {
+                    $.ajax({
+                        url: `/mechanic/services/${mechanicId}`,
+                        method: 'GET',
+                        success: function (data) {
+                            $('#service').empty().append('<option value="">-- Select Service --</option>');
+                            data.forEach(function (service) {
+                                $('#service').append(`<option value="${service.service_id}">${service.name}</option>`);
+                            });
+                        }
+                    });
+                } else {
+                    $('#service').empty().append('<option value="">-- Select Service --</option>');
+                }
+            });
+
+            $('#customer').change(function () {
+                const customerId = $(this).val();
+                if (customerId) {
+                    $.ajax({
+                        url: `/customer/vehicles/${customerId}`,
+                        method: 'GET',
+                        success: function (data) {
+                            $('#vehicle').empty().append('<option value="">-- Select Vehicle --</option>');
+                            data.forEach(function (vehicle) {
+                                $('#vehicle').append(`<option value="${vehicle.vehicle_id}">${vehicle.make} ${vehicle.model}</option>`);
+                            });
+                        }
+                    });
+                } else {
+                    $('#vehicle').empty().append('<option value="">-- Select Vehicle --</option>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

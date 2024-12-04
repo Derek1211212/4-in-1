@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Ad</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container label {
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-container input,
+        .form-container select,
+        .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+
+        .form-container .cancel-btn {
+            background-color: #f44336;
+        }
+
+        .form-container .cancel-btn:hover {
+            background-color: #e53935;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 5px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/upload-part">Upload Part</a>
+        <a href="/shopping">Shopping</a>
+        <a href="/contact">Contact</a>
+        <a href="/uploaded-ads">My Uploaded Ads</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="form-container">
+            <h2>Edit Ad</h2>
+
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="alert alert-{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('change_ad', ad_id=ad['ad_id']) }}" method="POST" enctype="multipart/form-data">
+                
+                <!-- Part Category -->
+                <label for="part_category">Part Category</label>
+                <select name="part_category" id="part_category" required>
+                    <option value="Engine and Related Parts" {% if ad['part_category'] == 'Engine and Related Parts' %}selected{% endif %}>Engine and Related Parts</option>
+                    <option value="Fuel System" {% if ad['part_category'] == 'Fuel System' %}selected{% endif %}>Fuel System</option>
+                    <option value="Exhaust System" {% if ad['part_category'] == 'Exhaust System' %}selected{% endif %}>Exhaust System</option>
+                    <option value="Cooling System" {% if ad['part_category'] == 'Cooling System' %}selected{% endif %}>Cooling System</option>
+                    <option value="Electrical System" {% if ad['part_category'] == 'Electrical System' %}selected{% endif %}>Electrical System</option>
+                    <option value="Transmission and Drivetrain" {% if ad['part_category'] == 'Transmission and Drivetrain' %}selected{% endif %}>Transmission and Drivetrain</option>
+                    <option value="Braking System" {% if ad['part_category'] == 'Braking System' %}selected{% endif %}>Braking System</option>
+                    <option value="Suspension System" {% if ad['part_category'] == 'Suspension System' %}selected{% endif %}>Suspension System</option>
+                    <option value="Steering System" {% if ad['part_category'] == 'Steering System' %}selected{% endif %}>Steering System</option>
+                    <option value="Interior Components" {% if ad['part_category'] == 'Interior Components' %}selected{% endif %}>Interior Components</option>
+                    <option value="Exterior Body Parts" {% if ad['part_category'] == 'Exterior Body Parts' %}selected{% endif %}>Exterior Body Parts</option>
+                    <option value="Lighting" {% if ad['part_category'] == 'Lighting' %}selected{% endif %}>Lighting</option>
+                    <option value="Climate Control" {% if ad['part_category'] == 'Climate Control' %}selected{% endif %}>Climate Control</option>
+                    <option value="Wheels and Tires" {% if ad['part_category'] == 'Wheels and Tires' %}selected{% endif %}>Wheels and Tires</option>
+                    <option value="Safety and Security Systems" {% if ad['part_category'] == 'Safety and Security Systems' %}selected{% endif %}>Safety and Security Systems</option>
+                    <option value="Glass and Wiper System" {% if ad['part_category'] == 'Glass and Wiper System' %}selected{% endif %}>Glass and Wiper System</option>
+                    <option value="Fuel and Emission Control" {% if ad['part_category'] == 'Fuel and Emission Control' %}selected{% endif %}>Fuel and Emission Control</option>
+                    <option value="Accessories and Add-ons" {% if ad['part_category'] == 'Accessories and Add-ons' %}selected{% endif %}>Accessories and Add-ons</option>
+                    <option value="Miscellaneous and Small Parts" {% if ad['part_category'] == 'Miscellaneous and Small Parts' %}selected{% endif %}>Miscellaneous and Small Parts</option>
+                    <option value="Infotainment and Electronics" {% if ad['part_category'] == 'Infotainment and Electronics' %}selected{% endif %}>Infotainment and Electronics</option>
+                </select>
+
+                <!-- Part Name -->
+                <label for="part_name">Part Name</label>
+                <input type="text" name="part_name" id="part_name" value="{{ ad['part_name'] }}" required>
+
+                <!-- Price -->
+                <label for="price">Price</label>
+                <input type="number" name="price" id="price" value="{{ ad['price'] }}" step="0.01" required>
+
+               
+
+                <!-- Part Description -->
+                <label for="part_description">Part Description</label>
+                <textarea name="part_description" id="part_description" rows="4" required>{{ ad['part_description'] }}</textarea>
+
+                <!-- Seller Contact -->
+                <label for="seller_contact">Seller Contact</label>
+                <input type="text" name="seller_contact" id="seller_contact" value="{{ ad['seller_contact'] }}" required>
+
+                <!-- Upload New Image -->
+                <label for="image1">Upload New Image</label>
+                <input type="file" name="image1" id="image1">
+
+                <!-- Display Current Image -->
+                {% if ad['image1'] %}
+                    <h3>Current Image</h3>
+                    <img src="{{ url_for('static', filename='images/' + ad['image1']) }}" alt="Ad Image" style="width:100%; height:auto;">
+                {% endif %}
+
+                <button type="submit">Save Changes</button>
+                <a href="{{ url_for('uploaded_ads') }}" class="cancel-btn">
+                    <button type="button">Cancel</button>
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Your Company. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

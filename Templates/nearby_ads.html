@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Towing Ads Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        #locationForm {
+            margin: 20px 0;
+        }
+
+        #locationForm input[type="text"] {
+            padding: 10px;
+            width: 250px;
+            margin-right: 10px;
+        }
+
+        #locationForm button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #locationForm button:hover {
+            background-color: #0056b3;
+        }
+
+        .ad-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .ad-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 15%;
+            padding: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .ad-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .ad-card .ad-info {
+            margin-top: 10px;
+        }
+
+        .ad-card .ad-info h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .ad-card .ad-info p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .ad-card .ad-info span {
+            font-size: 12px;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .ad-card {
+                width: 30%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .ad-card {
+                width: 41%;
+            }
+        }
+
+        .ad-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+.ad-popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 550px;
+    width: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    max-height: 80vh; /* Limit the height of the popup */
+    overflow-y: auto; /* Enables vertical scrolling */
+}
+
+        #closePopup {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .reveal-contact {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .reveal-contact:hover {
+            background-color: #0056b3;
+        }
+
+        .review-section {
+            margin-top: 20px;
+        }
+
+        .review-section h4 {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .review-section textarea {
+            width: 90%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+
+        .review-section button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .review-section button:hover {
+            background-color: #218838;
+        }
+
+        .reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adds space between reviews */
+    padding: 0;
+}
+
+/* Individual review item styling */
+.review-item {
+    background-color: #f8f9fa;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+
+
+        .review-item p {
+            margin: 0;
+        }
+
+        .review-item .review-author {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+
+        /* Small Screen Adjustments */
+    @media (max-width: 480px) {
+        .ad-popup-content {
+            max-width: 90%;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .ad-popup-content h2 {
+            font-size: 20px;
+        }
+
+        #closePopup {
+            font-size: 18px;
+            top: 5px;
+            right: 10px;
+        }
+
+        .review-section h4 {
+            font-size: 14px;
+        }
+
+        .review-section textarea {
+            height: 75px;
+        }
+
+        .review-section button {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .reviews-list {
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .review-item {
+            font-size: 14px;
+        }
+
+        .review-item .review-author {
+            font-size: 14px;
+        }
+
+        /* Add padding to buttons for easier click/tap */
+        .reveal-contact, .review-section button {
+            padding: 12px 15px;
+            font-size: 16px;
+        }
+    }
+
+
+.reviews-container {
+    max-height: 300px; /* Adjust this based on your design */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 10px;
+    border: 1px solid #ccc; /* Optional: Adds a border to the container */
+    background-color: #f9f9f9; /* Optional: Adds a background color */
+    margin-top: 15px; /* Adds spacing above the review container */
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adds space between reviews */
+}
+
+.review {
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Optional: Adds a separator between reviews */
+}
+
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Towing Services Near You</h1>
+    </header>
+
+    <div class="container">
+        <!-- Location Input Form -->
+        <form id="locationForm">
+            <label for="location">Enter your location (city, state, or zip code):</label>
+            <input type="text" id="location" name="location" placeholder="City, State or Zip Code" required>
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Displaying Ads -->
+        <div class="ad-list" id="adList">
+            <!-- Ads will be populated here dynamically -->
+        </div>
+
+        <!-- Ad Details Popup -->
+        <div id="adDetailsPopup" class="ad-popup" style="display: none;">
+            <div class="ad-popup-content">
+                <span id="closePopup">&times;</span>
+                <div id="adDetailsContent">
+                    <!-- Ad details will be loaded here dynamically -->
+                </div>
+                <button id="revealContactButton" class="reveal-contact">Reveal Contact</button>
+                <p id="adContact" style="display: none;"></p>
+
+                <!-- Review Section -->
+                <div class="review-section">
+                    <h4>Leave a Review</h4>
+                    <textarea id="reviewText" placeholder="Write your review here..."></textarea>
+
+                    <!-- Rating system -->
+                    <div id="ratingSystem">
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="2">&#9733;</span>
+                        <span class="star" data-value="3">&#9733;</span>
+                        <span class="star" data-value="4">&#9733;</span>
+                        <span class="star" data-value="5">&#9733;</span>
+                    </div>
+                    <button id="submitReviewButton">Submit Review</button>
+                </div>
+
+               <div class="reviews-container">
+    <div class="reviews-list" id="reviewsList">
+        <!-- Reviews will be populated here dynamically -->
+    </div>
+</div>
+            </div>
+        </div>
+    </div>
+
+   <script>
+   let selectedRating = 0;
+
+    // Handle click on stars to select a rating
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function() {
+            selectedRating = this.dataset.value; // Set selected rating value
+            updateStarDisplay(); // Update star display to reflect selection
+        });
+    });
+
+    // Function to update the appearance of stars based on selected rating
+    function updateStarDisplay() {
+        document.querySelectorAll('.star').forEach(star => {
+            if (star.dataset.value <= selectedRating) {
+                star.style.color = 'gold'; // Highlight selected stars
+            } else {
+                star.style.color = 'gray'; // Deselect unselected stars
+            }
+        });
+    }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch all ads when the page loads
+    fetchAdsByLocation('');
+});
+
+// Handle form submission for location input
+document.getElementById('locationForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const location = document.getElementById('location').value;
+    fetchAdsByLocation(location);
+});
+
+// Fetch ads by location
+async function fetchAdsByLocation(location) {
+    try {
+        const url = location ? `/api/get_ads_by_location?location=${location}` : '/api/get_ads_by_location';
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.ads && data.ads.length > 0) {
+            displayAds(data.ads);
+        } else {
+            alert("No ads found.");
+        }
+    } catch (error) {
+        console.error('Error fetching ads:', error);
+    }
+}
+
+function displayAds(ads) {
+    const adList = document.getElementById('adList');
+    adList.innerHTML = ''; // Clear any existing ads
+
+    ads.forEach(ad => {
+        const adCard = document.createElement('div');
+        adCard.classList.add('ad-card');
+        adCard.innerHTML = `
+            <img src="/static/images/${ad.image1}" alt="${ad.title}">
+            <div class="ad-info">
+                <h3>${ad.title}</h3>
+                <p>${ad.description}</p>
+                <span>Distance: ${ad.distance.toFixed(2)} km</span><br>
+                <span>Posted: ${new Date(ad.created_at).toLocaleString()}</span><br>
+                <span>Location: ${ad.location_detail}</span>
+            </div>
+        `;
+        adCard.addEventListener('click', () => openAdDetails(ad));
+        adList.appendChild(adCard);
+    });
+}
+
+
+    async function trackImpression(ad_id) {
+        try {
+            const response = await fetch('/api/track_impression', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ad_id: ad_id })
+            });
+            const data = await response.json();
+            console.log(data.message);
+        } catch (error) {
+            console.error('Error tracking impression:', error);
+        }
+    }
+
+    // Open Ad Details Popup
+    function openAdDetails(ad) {
+        // Track the click
+        trackClick(ad.ad_id);
+
+        const popup = document.getElementById('adDetailsPopup');
+        const content = document.getElementById('adDetailsContent');
+        const contactElement = document.getElementById('adContact');
+        const revealButton = document.getElementById('revealContactButton');
+        const reviewSection = document.getElementById('reviewsList');
+        const reviewText = document.getElementById('reviewText');
+        const submitReviewButton = document.getElementById('submitReviewButton');
+
+        popup.style.display = 'flex';
+
+        content.innerHTML = `
+            <h2>${ad.title}</h2>
+            <p>${ad.description}</p>
+            <p><strong>Location:</strong> ${ad.location_detail}</p>
+        `;
+
+        revealButton.onclick = function() {
+            contactElement.style.display = 'block';
+            contactElement.textContent = `Contact: ${ad.contact}`;
+        };
+
+        // Handle Review submission
+        submitReviewButton.onclick = function() {
+            const review = reviewText.value.trim();
+            if (review && selectedRating > 0) {
+                submitReview(ad.ad_id, selectedRating, review);
+            } else {
+                alert("Please select a rating and write a review.");
+            }
+        };
+
+        // Fetch existing reviews
+        fetchReviews(ad.ad_id);
+    }
+
+    async function trackClick(ad_id) {
+        try {
+            const response = await fetch('/api/track_click', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ad_id: ad_id })
+            });
+            const data = await response.json();
+            console.log(data.message);
+        } catch (error) {
+            console.error('Error tracking click:', error);
+        }
+    }
+
+    // Frontend function to submit review
+    async function submitReview(ad_id, rating, review_text) {
+    const response = await fetch('/api/submit_review', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            ad_id: ad_id,
+            rating: rating,
+            review_text: review_text
+        })
+    });
+
+    const data = await response.json();
+    if (data.success) {
+        alert("Review submitted successfully!");
+        // Optionally, refresh the reviews section
+    } else {
+        alert("Failed to submit review: " + data.message);  // Log the error message
+    }
+}
+
+
+async function fetchReviews(ad_id) {
+    try {
+        const response = await fetch(`/api/get_reviews?ad_id=${ad_id}`);
+        const data = await response.json();
+
+        // Log the entire response for debugging
+        console.log('API Response:', data);
+
+        const reviewsList = document.getElementById('reviewsList');
+        reviewsList.innerHTML = ''; // Clear existing reviews
+
+        if (data.success) {
+            // Check if 'reviews' is a valid array and contains reviews
+            if (Array.isArray(data.reviews) && data.reviews.length > 0) {
+                data.reviews.forEach(review => {
+                    const reviewItem = document.createElement('div');
+                    reviewItem.classList.add('review-item');
+                    reviewItem.innerHTML = `
+                        <p class="review-author">${review.author}</p>
+                        <p>${review.review_text}</p>
+                        <p>Rating: ${review.rating} stars</p>
+                    `;
+                    reviewsList.appendChild(reviewItem);
+                });
+            } else {
+                reviewsList.innerHTML = '<p>No reviews available for this ad.</p>';
+            }
+        } else {
+            reviewsList.innerHTML = '<p>Error fetching reviews: ' + data.message + '</p>';
+        }
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
+    }
+}
+
+    // Handle star rating selection
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function() {
+            selectedRating = parseInt(this.getAttribute('data-value'));
+            // Highlight selected stars
+            document.querySelectorAll('.star').forEach(s => {
+                s.style.color = parseInt(s.getAttribute('data-value')) <= selectedRating ? 'gold' : 'gray';
+            });
+        });
+    });
+
+    // Close Ad Details Popup
+    document.getElementById('closePopup').addEventListener('click', function() {
+        document.getElementById('adDetailsPopup').style.display = 'none';
+    });
+</script>
+
+</body>
+</html>

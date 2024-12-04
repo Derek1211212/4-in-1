@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f9f9f9;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 10px;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            border-radius: 10px 10px 0 0;
+        }
+
+        /* Mobile and small screens */
+        @media (max-width: 768px) {
+            .card {
+                width: 45%;  /* Two cards in a row on small screens */
+            }
+        }
+
+        /* Extra small mobile screens */
+        @media (max-width: 480px) {
+            .card {
+                width: 100%;  /* One card per row on very small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Welcome to Your Dashboard</h1>
+        <div class="cards-container">
+            <!-- Maintenance Due -->
+            <div class="card" id="maintenance-due">
+                <h2>Maintenance Due</h2>
+                <p>{{ stats['maintenance_due_count'] }}</p>
+            </div>
+
+            <!-- Total Expense -->
+            <div class="card" id="total-expense">
+                <h2>Total Expense</h2>
+                <p>${{ stats['total_expense'] }}</p>
+            </div>
+
+            <!-- Total Revenue -->
+            <div class="card" id="total-revenue">
+                <h2>Total Revenue</h2>
+                <p>${{ stats['total_revenue'] }}</p>
+            </div>
+
+            <!-- Service Revenue -->
+            <div class="card" id="service-revenue">
+                <h2>Service Revenue</h2>
+                <p>${{ stats['service_revenue'] }}</p>
+            </div>
+
+            <!-- Part Revenue -->
+            <div class="card" id="part-revenue">
+                <h2>Part Revenue</h2>
+                <p>${{ stats['part_revenue'] }}</p>
+            </div>
+
+            <!-- Total Customers -->
+            <div class="card" id="total-customers">
+                <h2>Total Customers</h2>
+                <p>{{ stats['total_customers'] }}</p>
+            </div>
+
+            <!-- Total Services -->
+            <div class="card" id="total-services">
+                <h2>Total Services</h2>
+                <p>{{ stats['total_services'] }}</p>
+            </div>
+
+            <!-- Total Vehicles -->
+            <div class="card" id="total-vehicles">
+                <h2>Total Vehicles</h2>
+                <p>{{ stats['total_vehicles'] }}</p>
+            </div>
+
+            <!-- Total Employees -->
+            <div class="card" id="total-employees">
+                <h2>Total Employees</h2>
+                <p>{{ stats['total_employees'] }}</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation for cards
+        document.addEventListener("DOMContentLoaded", function () {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = 1;
+                    card.style.transform = "translateY(0)";
+                }, index * 150);
+            });
+        });
+    </script>
+</body>
+</html>

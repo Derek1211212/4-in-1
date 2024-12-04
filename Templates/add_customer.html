@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Customer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Ensure the body takes the full height of the viewport */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1; /* Allow the container to grow and fill the available space */
+        }
+
+        .navbar, .btn-primary, footer {
+            background-color: #17a2b8 !important;
+            border: none;
+        }
+
+        .navbar a, footer, .btn-primary {
+            color: white !important;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;        
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand text-white" href="#">Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Appointments</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container mt-4">
+        <h2>Add New Customer</h2>
+
+        <!-- View All Customers button -->
+        <div class="d-flex justify-content-between mb-4">
+            <a href="{{ url_for('view_customers') }}" class="btn btn-primary">View All Customers</a>
+        </div>
+
+        <form action="{{ url_for('add_customer') }}" method="post">
+            <div class="form-group">
+                <label for="full_name">Full Name:</label>
+                <input type="text" class="form-control" id="full_name" name="full_name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+            </div>
+            <div class="form-group">
+                <label for="email_address">Email Address:</label>
+                <input type="email" class="form-control" id="email_address" name="email_address" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" class="form-control" id="address" name="address">
+            </div>
+            <div class="form-group">
+                <label for="preferred_mechanic">Preferred Mechanic ID:</label>
+                <input type="number" class="form-control" id="preferred_mechanic" name="preferred_mechanic" value="{{ preferred_mechanic }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="communication_pref">Communication Preference:</label>
+                <input type="text" class="form-control" id="communication_pref" name="communication_pref">
+            </div>
+            <div class="form-group">
+                <label for="emergency_contact_name">Emergency Contact Name:</label>
+                <input type="text" class="form-control" id="emergency_contact_name" name="emergency_contact_name">
+            </div>
+            <div class="form-group">
+                <label for="emergency_contact_number">Emergency Contact Number:</label>
+                <input type="text" class="form-control" id="emergency_contact_number" name="emergency_contact_number">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Customer</button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Your Company Name</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Maintenance Log</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Optional for icons -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .flash-message {
+            color: green;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Maintenance Log</h1>
+
+    {% if success_message %}
+        <div class="flash-message">
+            {{ success_message }}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('edit_log', log_id=log.log_id) }}">
+        <label for="work_description">Work Description:</label>
+        <input type="text" id="work_description" name="work_description" value="{{ log.work_description }}" required>
+
+        <label for="parts_used">Parts Used:</label>
+        <input type="text" id="parts_used" name="parts_used" value="{{ log.parts_used }}" required>
+
+        <label for="cost_of_parts">Cost of Parts:</label>
+        <input type="number" id="cost_of_parts" name="cost_of_parts" value="{{ log.cost_of_parts }}" required>
+
+        <label for="labor_cost">Labor Cost:</label>
+        <input type="number" id="labor_cost" name="labor_cost" value="{{ log.labor_cost }}" required>
+
+        <label for="total_cost">Total Cost:</label>
+        <input type="number" id="total_cost" name="total_cost" value="{{ log.total_cost }}" required>
+
+        <label for="log_date">Log Date:</label>
+        <input type="date" id="log_date" name="log_date" value="{{ log.log_date }}" required>
+
+        <label for="service_type">Service Type:</label>
+        <input type="text" id="service_type" name="service_type" value="{{ log.service_type }}" required>
+
+        <label for="warranty_information">Warranty Information:</label>
+        <textarea id="warranty_information" name="warranty_information">{{ log.warranty_information }}</textarea>
+
+        <label for="next_scheduled_service">Next Scheduled Service:</label> <!-- New field -->
+        <input type="date" id="next_scheduled_service" name="next_scheduled_service" value="{{ log.next_scheduled_service }}" required>
+
+        <input type="submit" value="Update Log">
+    </form>
+
+    <p style="text-align: center;">
+        <a href="{{ url_for('view_maintenance_logs') }}">Back to Maintenance Logs</a>
+    </p>
+</body>
+</html>

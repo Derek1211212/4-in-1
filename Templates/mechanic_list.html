@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Shops Nearby</title>
+    <style>
+        /* General body and form styling */
+        html, body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header styling */
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        /* Main content styling */
+        main {
+            flex: 1;
+            padding-bottom: 60px; /* Space for the footer */
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 24px;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 70%;
+            max-width: 400px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Styling for the list of mechanic shop cards */
+        .shop-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            padding: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Card styling */
+.shop-card {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+    height: 100%; /* Ensures consistent height */
+}
+
+.shop-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image styling for each card */
+.shop-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Content container to separate content and button */
+.shop-card .content {
+    flex: 1;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+
+/* Styling for Google Maps link */
+.map-link {
+    margin-top: auto;
+    display: block;
+    text-align: center;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.map-link:hover {
+    background-color: #45a049;
+}
+
+
+        /* Footer styling */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Mechanic Shops Nearby</h1>
+    </header>
+
+    <main>
+        <h2>Find Mechanic Shops Near You</h2>
+        <form method="POST" action="{{ url_for('mechanic_shops') }}">
+            <input type="text" name="location" placeholder="Enter a city or location" required>
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="shop-list">
+            {% if mechanics %}
+                {% for mechanic in mechanics %}
+              <div class="shop-card">
+    <img src="{{ url_for('static', filename='images/' + (mechanic.company_image if mechanic.company_image else 'default_image.jpg')) }}" alt="{{ mechanic.name }}">
+    <div class="content">
+        <h3>{{ mechanic.name }}</h3>
+        <p><strong>Working Hours:</strong> {{ mechanic.working_hours }}</p>
+        <p><strong>Service Locations:</strong> {{ mechanic.service_locations }}</p>
+        <p><strong>Contact:</strong> {{ mechanic.contact }}</p>
+        <p><strong>Services:</strong> {{ mechanic.service_descriptions }}</p>
+        {% if mechanic.distance %}
+            <p><strong>Distance:</strong> {{ mechanic.distance }} km</p>
+        {% endif %}
+    </div>
+    <a href="https://www.google.com/maps?q={{ mechanic.latitude }},{{ mechanic.longitude }}" class="map-link" target="_blank">View on Google Maps</a>
+</div>
+
+                {% endfor %}
+            {% else %}
+                <p class="no-results">No mechanic shops found for the specified location.</p>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Mechanic Shop Finder. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

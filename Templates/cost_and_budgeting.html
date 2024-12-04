@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost and Budgeting</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        main {
+            padding: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/enter-fuel-cost">Enter Fuel Cost</a>
+    <a href="/enter-road-worthy">Update Road Worthy Info</a>
+    <a href="/enter-insurance">Update Insurance Info</a>
+</nav>
+
+<main>
+
+    <!-- Filter Form -->
+    <form method="get" action="/cost-and-budgeting">
+        <label for="license_plate_number">License Plate Number:</label>
+        <select id="license_plate_number" name="license_plate_number">
+            <option value="">Select License Plate</option>
+            {% for vehicle in license_plate_numbers %}
+                <option value="{{ vehicle.license_plate_number }}" {% if vehicle.license_plate_number == license_plate_number %}selected{% endif %}>
+                    {{ vehicle.license_plate_number }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" value="{{ year or '' }}" placeholder="Enter Year">
+
+        <button type="submit">Apply Filter</button>
+    </form>
+
+    <!-- Maintenance History Chart -->
+    <div>
+        <h2>Maintenance History</h2>
+        <canvas id="maintenanceChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Fuel Costs Chart -->
+    <div>
+        <h2>Fuel Costs</h2>
+        <canvas id="fuelChart" width="400" height="200"></canvas>
+    </div>
+
+</main>
+
+<script>
+    // Data for Maintenance History Chart
+    const maintenanceData = {
+        labels: [{% for entry in maintenance_data %}"{{ entry.month }}-{{ entry.year }}"{% if not loop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Maintenance Cost',
+            data: [{% for entry in maintenance_data %}{{ entry.total_cost }}{% if not loop.last %},{% endif %}{% endfor %}],
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1,
+            fill: false
+        }]
+    };
+
+    const maintenanceConfig = {
+        type: 'line',
+        data: maintenanceData,
+    };
+
+    const maintenanceChart = new Chart(
+        document.getElementById('maintenanceChart'),
+        maintenanceConfig
+    );
+
+    // Data for Fuel Costs Chart
+    const fuelData = {
+        labels: [{% for entry in fuel_data %}"{{ entry.month }}-{{ entry.year }}"{% if not loop.last %},{% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Fuel Cost',
+            data: [{% for entry in fuel_data %}{{ entry.total_fuel_cost }}{% if not loop.last %},{% endif %}{% endfor %}],
+            borderColor: 'rgb(255, 99, 132)',
+            tension: 0.1,
+            fill: false
+        }]
+    };
+
+    const fuelConfig = {
+        type: 'line',
+        data: fuelData,
+    };
+
+    const fuelChart = new Chart(
+        document.getElementById('fuelChart'),
+        fuelConfig
+    );
+</script>
+
+</body>
+</html>

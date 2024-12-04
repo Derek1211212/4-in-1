@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Spare Part</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        header {
+            background-color: #343a40;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1em;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        nav {
+            flex-grow: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background-color: #343a40;
+                width: 100%;
+                z-index: 1000;
+            }
+
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            nav ul li {
+                text-align: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #fff;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        .show-nav {
+            display: flex !important;
+        }
+
+        .stats {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="text"],
+        select,
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .view-ads-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            width: fit-content;
+        }
+
+        .view-ads-button:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Spare Parts App</div>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/upload-part">Upload Part</a></li>
+                <li><a href="/my-ads">My Ads</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <h1>Upload Spare Part</h1>
+
+    <!-- Display Stats -->
+    <div class="stats">
+        <p><strong>Total Ads Uploaded:</strong> {{ total_ads }}</p>
+        <p><strong>Estimated Revenue:</strong> GHS {{ total_revenue }}</p>
+    </div>
+
+    <form id="uploadForm" method="POST" enctype="multipart/form-data">
+        <label for="shop_name">Shop Name:</label>
+        <input type="text" id="shop_name" name="shop_name" required>
+
+        <label for="part_category">Part Category:</label>
+        <select id="part_category" name="part_category" required>
+            <option value="Engine and Related Parts">Engine and Related Parts</option>
+            <option value="Fuel System">Fuel System</option>
+            <option value="Exhaust System">Exhaust System</option>
+            <option value="Cooling System">Cooling System</option>
+            <option value="Electrical System">Electrical System</option>
+            <option value="Transmission and Drivetrain">Transmission and Drivetrain</option>
+            <option value="Braking System">Braking System</option>
+            <option value="Suspension System">Suspension System</option>
+            <option value="Steering System">Steering System</option>
+            <option value="Interior Components">Interior Components</option>
+            <option value="Exterior Body Parts">Exterior Body Parts</option>
+            <option value="Lighting">Lighting</option>
+            <option value="Climate Control">Climate Control</option>
+            <option value="Wheels and Tires">Wheels and Tires</option>
+            <option value="Safety and Security Systems">Safety and Security Systems</option>
+            <option value="Glass and Wiper System">Glass and Wiper System</option>
+            <option value="Fuel and Emission Control">Fuel and Emission Control</option>
+            <option value="Accessories and Add-ons">Accessories and Add-ons</option>
+            <option value="Miscellaneous and Small Parts">Miscellaneous and Small Parts</option>
+            <option value="Infotainment and Electronics">Infotainment and Electronics</option>
+        </select>
+
+         <label for="brand">Brand:</label>
+    <input type="text" id="brand" name="brand" required>
+
+    <label for="condition">Condition:</label>
+    <select id="condition" name="condition" required>
+        <option value="New">New</option>
+        <option value="Used">Used</option>
+        <option value="Slightly Used">Slightly Used</option>
+    </select>
+
+    
+
+        <label for="part_name">Part Name:</label>
+        <input type="text" id="part_name" name="part_name" required>
+
+        <label for="part_description">Part Description:</label>
+        <textarea id="part_description" name="part_description" rows="4" required></textarea>
+
+        <label for="seller_contact">Seller Contact:</label>
+        <input type="text" id="seller_contact" name="seller_contact" required>
+
+        <label for="product_price">Price (GHS):</label>
+        <input type="text" id="product_price" name="product_price" required>
+
+        <label for="images">Upload Images (up to 4):</label>
+        <input type="file" name="images" accept="image/*" multiple required>
+
+        <button id="getLocationButton" style="margin: 20px auto; display: block;">Set Shop Location</button>
+        <button type="button" id="freeUploadButton">Upload for Free</button>
+        <br>
+        <button type="button" id="paidUploadButton">Upload with Payment</button>
+    </form>
+
+    <a href="/uploaded-ads" class="view-ads-button">View My Uploaded Ads</a>
+
+    <footer>
+        &copy; 2024 Spare Parts App. All rights reserved. |
+        <a href="/privacy-policy">Privacy Policy</a> |
+        <a href="/terms">Terms of Service</a>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.querySelector("header nav");
+            nav.classList.toggle("show-nav");
+        }
+    </script>
+</body>
+</html>

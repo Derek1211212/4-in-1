@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support & Help</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F5F5F5; /* Light background color */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top */
+            height: 100vh; /* Full height */
+        }
+
+        h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+            animation: fadeIn 1s ease forwards; /* Fade-in animation for the header */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+            animation: fadeIn 1s ease forwards; /* Fade-in for paragraph */
+            animation-delay: 0.5s; /* Delay for paragraph */
+        }
+
+        .container {
+            max-width: 1200px; /* Set a max width for the container */
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            display: flex; /* Flexbox for two columns */
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 20px; /* Space between columns */
+            margin-top: 8%;
+        }
+
+        .column {
+            flex: 1; /* Each column takes equal space */
+            min-width: 300px; /* Set a minimum width for responsiveness */
+            background: #f9f9f9; /* Light background for columns */
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease forwards; /* Fade-in for support items */
+        }
+
+        .support-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s; /* Transition for hover effects */
+        }
+
+        .support-item:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Shadow on hover */
+        }
+
+        .support-item h5 {
+            margin: 0;
+            color: #333;
+        }
+
+        .support-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s; /* Button hover effects */
+        }
+
+        .btn:hover {
+            background-color: #218838; /* Darken button on hover */
+            transform: translateY(-3px); /* Lift effect on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="column">
+            <h3>Support & Help</h3>
+            <p>Get assistance and support resources</p>
+
+            <div class="support-item">
+                <h5>Contact Us</h5>
+                <p>If you need immediate assistance, please reach out to our support team:</p>
+                <ul>
+                    <li>Email: <a href="mailto:support@mechanicshop.com">support@mechanicshop.com</a></li>
+                    <li>Phone: <a href="tel:+1234567890">+1 (234) 567-890</a></li>
+                </ul>
+            </div>
+
+            <div class="support-item">
+                <h5>Feedback</h5>
+                <p>Your feedback is important to us. Please share your thoughts:</p>
+                <a href="#" class="btn">Provide Feedback</a>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="support-item">
+                <h5>Frequently Asked Questions</h5>
+                <p>Check our FAQs for common queries:</p>
+                <ul>
+                    <li><a href="#">What services do you offer?</a></li>
+                    <li><a href="#">How can I schedule an appointment?</a></li>
+                    <li><a href="#">What are your payment options?</a></li>
+                </ul>
+            </div>
+
+            <div class="support-item">
+                <h5>Help Documentation</h5>
+                <p>Access our help documentation for detailed guides:</p>
+                <ul>
+                    <li><a href="#">User Guide</a></li>
+                    <li><a href="#">Mechanic Guide</a></li>
+                    <li><a href="#">Troubleshooting Steps</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

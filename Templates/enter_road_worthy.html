@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Road Worthy</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        /* Navbar Styles */
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styling */
+        .form-container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+    <a href="/">Home</a>
+    <a href="/enter-road-worthy">Enter Road Worthy</a>
+    <a href="/profile">Profile</a>
+</nav>
+
+<!-- Form to Enter Road Worthy Information -->
+<div class="form-container">
+    <h1>Enter Road Worthy Information</h1>
+    <form method="post" action="/enter-road-worthy">
+        <label for="license_plate_number">License Plate Number:</label>
+        <select id="license_plate_number" name="license_plate_number">
+            <option value="">Select License Plate</option>
+            {% for vehicle in license_plate_numbers %}
+                <!-- vehicle is a tuple, so extract the license plate number from the first element -->
+                <option value="{{ vehicle[0] }}">{{ vehicle[0] }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="inspection_date">Inspection Date:</label>
+        <input type="date" id="inspection_date" name="inspection_date" required>
+
+        <label for="inspection_status">Inspection Status:</label>
+        <select id="inspection_status" name="inspection_status" required>
+            <option value="Passed">Passed</option>
+            <option value="Failed">Failed</option>
+        </select>
+
+        <label for="road_worthy_certificate_number">Certificate Number:</label>
+        <input type="text" id="road_worthy_certificate_number" name="road_worthy_certificate_number" required>
+
+        <label for="road_worthy_expiry_date">Expiry Date:</label>
+        <input type="date" id="road_worthy_expiry_date" name="road_worthy_expiry_date" required>
+
+        <button type="submit">Submit Road Worthy Information</button>
+    </form>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2024 MyApp. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .slider {
+            position: relative;
+            max-width: 600px;
+            margin: auto;
+            overflow: hidden;
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slides img {
+            width: 100%;
+            height: 300px;
+            object-fit: contain;
+        }
+        .slide {
+            min-width: 100%;
+        }
+        .controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .btn {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .details {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .details h3 {
+            margin-top: 0;
+        }
+        .related-ads {
+            margin-top: 40px;
+        }
+        .related-ads h3 {
+            margin-bottom: 20px;
+        }
+        .related-ads .ad-card {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+        .related-ads .ad-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-right: 20px;
+        }
+        .related-ads .ad-card .ad-info {
+            flex: 1;
+        }
+        .related-ads .ad-card .ad-info h4 {
+            margin: 0 0 10px;
+        }
+        .related-ads .ad-card .ad-info p {
+            margin: 0;
+        }
+
+
+       .reviews-section {
+        margin-top: 40px;
+    }
+
+    .reviews-section h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .reviews-section ul {
+        list-style-type: none;
+        padding: 0;
+        max-height: 300px; /* Limit the height for better scroll experience */
+        overflow-y: auto; /* Allow scrolling if reviews are too long */
+    }
+
+    .reviews-section ul li {
+        background-color: #fff;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        word-wrap: break-word; /* Ensure long words break properly */
+    }
+
+    .reviews-section ul li strong {
+        font-size: 18px;
+        color: #333;
+        display: block; /* Ensures the rating is displayed clearly on top */
+        margin-bottom: 10px;
+    }
+
+    .reviews-section .review-form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .reviews-section .review-form select,
+    .reviews-section .review-form textarea {
+        width: 100%;
+        padding: 12px; /* Larger padding for easier interaction */
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px; /* Larger font for better readability */
+    }
+
+    .reviews-section .review-form button {
+        background-color: #E74C3C;
+        color: #fff;
+        padding: 12px 20px; /* Larger padding for touch devices */
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px; /* Larger font for better touch targets */
+        width: 100%; /* Ensure the button takes full width */
+        box-sizing: border-box; /* Ensures no overflow */
+    }
+
+    .reviews-section .review-form button:hover {
+        background-color: #C0392B;
+    }
+
+    /* Mobile-responsive styles */
+    @media (max-width: 600px) {
+        .reviews-section h3 {
+            font-size: 20px;
+        }
+
+        .reviews-section ul li {
+            padding: 12px; /* Smaller padding for mobile devices */
+        }
+
+        .reviews-section .review-form select,
+        .reviews-section .review-form textarea {
+            padding: 10px; /* Slightly smaller padding for mobile devices */
+        }
+
+        .reviews-section .review-form button {
+            padding: 12px 18px; /* Adjust padding for button on small screens */
+        }
+    }
+
+   .reviews-section h4 {
+        font-size: 22px;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .reviews-section form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .reviews-section form label {
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: #555;
+    }
+
+    .reviews-section form select,
+    .reviews-section form textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .reviews-section form button {
+        background-color: #E74C3C;
+        color: #fff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .reviews-section form button:hover {
+        background-color: #C0392B;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .reviews-section form {
+            padding: 15px;
+        }
+
+        .reviews-section form label {
+            font-size: 14px;
+        }
+
+        .reviews-section form select,
+        .reviews-section form textarea {
+            font-size: 14px;
+        }
+
+        .reviews-section form button {
+            font-size: 14px;
+            padding: 10px 15px;
+        }
+    }
+
+
+    
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Part Details</h1>
+
+        {% if part %}
+        <div class="slider">
+            <div class="slides">
+                {% if part.image1 %}<img class="slide" src="{{ url_for('static', filename='images/' + part.image1) }}" alt="Image 1">{% endif %}
+                {% if part.image2 %}<img class="slide" src="{{ url_for('static', filename='images/' + part.image2) }}" alt="Image 2">{% endif %}
+                {% if part.image3 %}<img class="slide" src="{{ url_for('static', filename='images/' + part.image3) }}" alt="Image 3">{% endif %}
+                {% if part.image4 %}<img class="slide" src="{{ url_for('static', filename='images/' + part.image4) }}" alt="Image 4">{% endif %}
+            </div>
+            <div class="controls">
+                <button class="btn" onclick="prevSlide()" aria-label="Previous Slide">&#10094;</button>
+                <button class="btn" onclick="nextSlide()" aria-label="Next Slide">&#10095;</button>
+            </div>
+        </div>
+
+        <div class="details">
+            <h3>{{ part.part_name }}</h3>
+            <p><strong>Price:</strong> ₵{{ part.price }}</p>
+            <p><strong>Shop:</strong> {{ part.shop_name }}</p>
+            <p><strong>Status:</strong> <span style="color: green;">{{ part.status }}</span></p>
+            <p><strong>Brand:</strong> {{ part.brand }}</p>
+            <p><strong>Condition:</strong> {{ part.condition }}</p>
+            <p><strong>Description:</strong> {{ part.part_description }}</p>
+            <p><strong>Seller Contact:</strong> <span id="seller-contact" style="display: none;">{{ part.seller_contact }}</span></p>
+            <button id="reveal-contact-btn" data-ad-id="{{ part.ad_id }}" onclick="revealContact(this)">Reveal Contact</button>
+        </div>
+
+        <div class="reviews-section">
+            <h3>Reviews</h3>
+
+            <!-- Display Reviews -->
+            {% if reviews %}
+            <ul>
+                {% for review in reviews %}
+                <li>
+                    <strong>{{ review.user_name }} ({{ review.rating }} stars)</strong>
+                    <p>{{ review.review_text }}</p>
+                    <small>Posted on: {{ review.created_at }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No reviews yet.</p>
+            {% endif %}
+
+            <!-- Review Form -->
+            <h4>Submit Your Review</h4>
+            <form action="{{ url_for('part_details', ad_id=part.ad_id) }}" method="POST">
+                <label for="rating">Rating:</label>
+                <select name="rating" id="rating" required>
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+                <br>
+                <label for="review_text">Review:</label>
+                <textarea name="review_text" id="review_text" rows="4" required></textarea>
+                <br>
+                <button type="submit">Submit Review</button>
+            </form>
+        </div>
+
+
+        <div class="related-ads">
+            <h3>Related Ads</h3>
+            {% for related in related_ads %}
+            <div class="ad-card">
+                <img src="{{ url_for('static', filename='images/' + related.image1) }}" alt="Related Ad">
+                <div class="ad-info">
+                    <h4>{{ related.part_name }}</h4>
+                    <p><strong>Price:</strong> ₵{{ related.price }}</p>
+                    <p><strong>Shop:</strong> {{ related.shop_name }}</p>
+                  <a href="{{ url_for('part_details', ad_id=related.ad_id) }}">View Details</a>
+
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="details">
+            <p>Sorry, the part details are not available.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            const slides = document.querySelector('.slides');
+            const totalSlides = slides.children.length;
+            if (index >= totalSlides) {
+                currentSlide = 0;
+            } else if (index < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = index;
+            }
+            slides.style.transform = 'translateX(' + (-currentSlide * 100) + '%)';
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function revealContact(button) {
+            const adId = button.getAttribute('data-ad-id');
+            const contactElement = document.getElementById('seller-contact');
+            const revealButton = document.getElementById('reveal-contact-btn');
+
+            if (contactElement.style.display === 'none') {
+                contactElement.style.display = 'inline';
+                revealButton.textContent = 'Hide Contact';
+
+                fetch(`/log-contact-reveal/${adId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log(data.message);
+                    } else {
+                        console.error('Error:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error logging phone reveal:', error);
+                });
+            } else {
+                contactElement.style.display = 'none';
+                revealButton.textContent = 'Reveal Contact';
+            }
+        }
+    </script>
+
+</body>
+</html>

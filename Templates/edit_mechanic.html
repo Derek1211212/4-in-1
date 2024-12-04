@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Mechanic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F5F5F5; /* Light background color */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Changed to column for vertical stacking */
+            height: 100vh; /* Full height */
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            animation: fadeIn 1s ease forwards; /* Fade-in animation for the header */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-container {
+            max-width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            animation: slideIn 0.5s ease forwards; /* Slide-in animation for the form */
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        label {
+            margin-top: 10px;
+            display: block;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s; /* Smooth border color transition */
+        }
+
+        input:focus {
+            border-color: #5259f8; /* Change border color on focus */
+            box-shadow: 0 0 5px rgba(82, 89, 248, 0.5); /* Glow effect */
+            outline: none; /* Remove default outline */
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s; /* Button hover effects */
+        }
+
+        button:hover {
+            background-color: #218838; /* Darken button on hover */
+            transform: translateY(-3px); /* Lift effect on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Edit Mechanic</h1>
+
+    <div class="form-container">
+        <form action="" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ mechanic[2] }}" placeholder="Enter name" required>
+
+            <label for="working_hours">Working Hours:</label>
+            <input type="text" id="working_hours" name="working_hours" value="{{ mechanic[3] }}" placeholder="e.g., 9am - 5pm" required>
+
+            <label for="service_locations">Service Locations:</label>
+            <input type="text" id="service_locations" name="service_locations" value="{{ mechanic[4] }}" placeholder="e.g., Location A, Location B" required>
+
+            <label for="skills_certifications">Skills & Certifications:</label>
+            <input type="text" id="skills_certifications" name="skills_certifications" value="{{ mechanic[5] }}" placeholder="e.g., Certification A, Certification B" required>
+
+            <button type="submit">Update</button>
+        </form>
+    </div>
+
+</body>
+</html>

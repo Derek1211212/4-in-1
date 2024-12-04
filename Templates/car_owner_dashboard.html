@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Owner Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #f7f7f7;
+        }
+
+        nav {
+            background-color: black;
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        nav.scrolled {
+            background-color: black;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #16a085;
+        }
+
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 10px;
+            margin-left: auto;
+        }
+
+        .hamburger-menu div {
+            width: 30px;
+            height: 3px;
+            background-color: white;
+            margin: 6px 0;
+        }
+
+        header {
+            background-color: black;
+            margin-top: 60px;
+            padding: 40px 20px;
+            color: white;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: fadeInAnimation 3s ease-in-out;
+        }
+
+        @keyframes fadeInAnimation {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            50% {
+                opacity: 0.5;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slider {
+            display: flex;
+            overflow: hidden;
+            width: 100%;
+            height: 250px;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .slide {
+            min-width: 100%;
+            transition: transform 1s ease;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Slider Navigation */
+        .slider-nav {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 50px;
+          
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+            font-size: 2rem;
+            z-index: 100;
+            user-select: none;
+        }
+
+        .prev-slide {
+            left: 0;
+        }
+
+        .next-slide {
+            right: 0;
+        }
+
+        main {
+            flex: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding: 10px;
+            width: 100%;
+            max-width: 1700px;
+            justify-items: center;
+            align-items: center;
+        }
+
+        button {
+            padding: 20px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: center;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        button img {
+            width: 70%;
+            margin-bottom: 10px;
+            object-fit: contain;
+        }
+
+        button span {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        button:hover span {
+            color: #16a085;
+        }
+
+        footer {
+            background-color: black;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 768px) {
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+        }
+
+        .company-logo {
+            display: none; /* Hide by default */
+            width: 70px; /* Adjust logo size */
+            height: auto;
+            position: absolute;
+            top: 12px;
+            right: 50px;
+            z-index: 1100;
+        }
+
+        @media (max-width: 480px) {
+            .company-logo {
+                display: block; /* Show the logo on small screens */
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                display: none;
+                width: 100%;
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            .hamburger-menu {
+                display: flex;
+            }
+
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr); /* Two columns on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="hamburger-menu" id="hamburger-menu">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <ul id="menu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="/logout">Log out</a></li>
+        </ul>
+        <img src="static/images/iiii.jpg" alt="Company Logo" class="company-logo">
+    </nav>
+
+    <header>
+        <h1>Car Owner Dashboard</h1>
+        <div id="ad-slider" class="slider">
+            <div class="slider-nav prev-slide" onclick="changeSlide(-1)">&#10094;</div>
+            <div class="slider-nav next-slide" onclick="changeSlide(1)">&#10095;</div>
+            <div class="slide"><img src="static/images/ad1.avif" alt="Ad 1"></div>
+            <div class="slide"><img src="static/images/ad2.avif" alt="Ad 2"></div>
+            <div class="slide"><img src="static/images/ad3.avif" alt="Ad 3"></div>
+            <div class="slide"><img src="static/images/ad4.jpg" alt="Ad 4"></div>
+        </div>
+    </header>
+
+    <main>
+        {% if session.get('notifications') %}
+        <div id="notification-bar">
+            <ul>
+                {% for message in session['notifications'] %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            <button onclick="document.getElementById('notification-bar').remove();">Close</button>
+        </div>
+        <script>
+            setTimeout(() => {
+                const notificationBar = document.getElementById('notification-bar');
+                if (notificationBar) {
+                    notificationBar.remove();
+                }
+            }, 5000);  // Hide after 5 seconds
+        </script>
+        {% endif %}
+
+        <div class="button-grid">
+            <a href="/maintenance_history"><button><img src="static/images/maintenance_history.avif" alt="Maintenance History"> Maintenance History</button></a>
+            <a href="/shopping"><button><img src="static/images/parts.webp" alt="Shop for parts"> Shop for parts</button></a>
+            <a href="/mechanic-shops"><button><img src="static/images/location.png" alt="Mechanic nearby"> Closest Mechanic nearby</button></a>
+            <a href="/add_vehicle"><button><img src="static/images/add.jpg" alt="Add vehicle"> Add vehicle</button></a>
+            <a href="/profile"><button><img src="static/images/profile.jpg" alt="Profile Settings"> Profile Settings</button></a>
+            <a href="/cost-and-budgeting"><button><img src="static/images/fm.jpg" alt="Fuel and Maintenance"> Fuel and Maintenance Cost Analysis</button></a>
+            <button><img src="static/images/news.jpg" alt="News & Update"> News & Updates</button>
+            <a href="/manage-entries"><button><img src="static/images/tif.jpg" alt="Insurance & Road Worthy"> Insurance & Road Worthy Info</button></a>
+            <a href="/nearby_ads"><button><img src="static/images/tow.jpg" alt="Tow Services"> Tow Services</button></a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Car Owner Dashboard. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('hamburger-menu').addEventListener('click', function () {
+            document.getElementById('menu').classList.toggle('active');
+        });
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        // Function to change slides
+        function changeSlide(step) {
+            currentSlide = (currentSlide + step + totalSlides) % totalSlides; // Wrap around using modulo
+            updateSlides();
+        }
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                slide.style.transform = `translateX(-${100 * currentSlide}%)`;
+            });
+        }
+
+        // Automatic slide change
+        setInterval(() => changeSlide(1), 5000);
+    </script>
+</body>
+</html>

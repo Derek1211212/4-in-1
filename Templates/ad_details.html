@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .image-slider {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .image-slider img {
+            width: 100%;
+            height: auto;
+        }
+
+        .image-slider .prev,
+        .image-slider .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        .image-slider .prev {
+            left: 10px;
+        }
+
+        .image-slider .next {
+            right: 10px;
+        }
+
+        .details {
+            margin-top: 20px;
+        }
+
+        .details h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .details p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .details span {
+            display: block;
+            margin-top: 5px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-slider" id="imageSlider">
+            <button class="prev" onclick="prevImage()">&#10094;</button>
+            <img id="sliderImage" src="" alt="Ad Image">
+            <button class="next" onclick="nextImage()">&#10095;</button>
+        </div>
+
+        <div class="details">
+            <h1 id="adTitle"></h1>
+            <p id="adDescription"></p>
+            <span><strong>Contact:</strong> <span id="adContact"></span></span>
+            <span><strong>Location:</strong> <span id="adLocation"></span></span>
+            <span><strong>Posted:</strong> <span id="adCreatedAt"></span></span>
+        </div>
+    </div>
+
+    <script>
+    // Simulated ad data, replace with actual dynamic data
+    const adData = {{ ad | tojson }};  // Pass your ad data as a JSON object from the backend
+
+    // Set up the image slider
+    const images = [adData.image1, adData.image2].filter(img => img); // Only include non-empty images
+    let currentIndex = 0;
+
+    const sliderImage = document.getElementById('sliderImage');
+    sliderImage.src = `/static/images/${images[currentIndex]}`;
+
+    // Function to go to the previous image in the slider
+    function prevImage() {
+        currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
+        sliderImage.src = `/static/images/${images[currentIndex]}`;
+    }
+
+    // Function to go to the next image in the slider
+    function nextImage() {
+        currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
+        sliderImage.src = `/static/images/${images[currentIndex]}`;
+    }
+
+    // Populate ad details on the page
+    document.getElementById('adTitle').innerText = adData.title;
+    document.getElementById('adDescription').innerText = adData.description;
+    document.getElementById('adContact').innerText = adData.contact;
+    document.getElementById('adLocation').innerText = adData.location_detail;
+    document.getElementById('adCreatedAt').innerText = new Date(adData.created_at).toLocaleString();
+
+    // Function to track phone number reveal
+    function trackContactReveal(adId) {
+        fetch('/track_contact_reveal', {
+            method: 'POST',
+            body: new URLSearchParams({
+                'ad_id': adId
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                console.log(data.message);  // Log the success message or handle errors
+            }
+        })
+        .catch(error => {
+            console.error('Error tracking contact reveal:', error);
+        });
+    }
+
+    // Handle "Reveal Contact" button click
+    document.getElementById('revealContactButton').addEventListener('click', function() {
+        const contactElement = document.getElementById('adContact');
+        contactElement.style.display = 'block';  // Show the contact information
+        trackContactReveal(adData.id);  // Track the contact reveal action
+    });
+</script>
+
+</body>
+</html>

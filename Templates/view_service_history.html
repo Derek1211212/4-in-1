@@ -1,0 +1,27 @@
+<!-- view_service_history.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Service History</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Service History</h1>
+        
+        <ul>
+            {% for record in service_history %}
+                <li>
+                    <strong>Service:</strong> {{ record['service_name'] }}<br>
+                    <strong>Description:</strong> {{ record['work_description'] }}<br>
+                    <strong>Date:</strong> {{ record['log_date'] }}<br>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <a href="{{ url_for('car_owner_dashboard') }}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

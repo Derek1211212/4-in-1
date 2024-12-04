@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Entries</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* General reset and body styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Navbar styling */
+        nav {
+            background-color: #333;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        /* Container for the buttons */
+        .button-container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;  /* Makes sure buttons take up the remaining space */
+        }
+
+        /* Button styles */
+        .button-container a {
+            display: block;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 5px;
+            font-size: 18px;
+            transform: translateY(100px); /* Initial position */
+            opacity: 0;
+            animation: slide-up 0.8s forwards;
+        }
+
+        /* Button animation */
+        .button-container a:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .button-container a:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+        .button-container a:nth-child(3) {
+            animation-delay: 0.9s;
+        }
+
+        /* Animation effect for sliding in from below */
+        @keyframes slide-up {
+            to {
+                transform: translateY(0);  /* End position */
+                opacity: 1;
+            }
+        }
+
+        /* Cover effect */
+        .cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: -1;
+            opacity: 1;
+            animation: fade-out 1s forwards;
+        }
+
+        /* Animation for the cover fading out */
+        @keyframes fade-out {
+            to {
+                opacity: 0;
+                z-index: -1;
+            }
+        }
+
+        /* Footer styling */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/upload-part">Upload Part</a>
+        <a href="/shopping">Shopping</a>
+        <a href="/contact">Contact</a>
+    </nav>
+
+    <!-- Cover text, this can be removed once the animation completes -->
+    <div class="cover">Welcome! Please make an entry.</div>
+
+    <!-- Container for the buttons -->
+    <div class="button-container">
+        <a href="/enter-fuel-cost">Enter Fuel Cost</a>
+        <a href="/enter-road-worthy">Update Road Worthy Info</a>
+        <a href="/enter-insurance">Update Insurance Info</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
