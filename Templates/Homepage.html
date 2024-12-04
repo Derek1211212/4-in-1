@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title>Mechanic Shop</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,29 +17,49 @@
             overflow-x: hidden;
         }
 
-        .background-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            background-image: url('static/images/hero-bg.jpg');
             background-size: cover;
             background-position: center;
-            opacity: 0.6;
+            margin-bottom: 30px;
         }
 
+        .hero-text h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-buttons button {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .hero-buttons button:hover {
+            background: #e67e22;
+        }
+
+        /* Header Section */
         header {
             width: 100%;
             padding: 15px 20px;
             background-color: rgba(0, 0, 0, 0.85);
             color: white;
             text-align: center;
-            position: relative;
-            z-index: 2;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .logo {
@@ -48,75 +68,30 @@
             color: #f39c12;
         }
 
-        header nav {
+        nav {
             display: flex;
             gap: 30px;
-            margin-right: 30px;
         }
 
-        header nav a {
+        nav a {
             color: white;
             text-decoration: none;
             font-size: 1rem;
         }
 
-        header nav a:hover {
+        nav a:hover {
             color: #f39c12;
         }
 
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            margin-right: 40px;
-        }
-
-        .hamburger div {
-            width: 30px;
-            height: 3px;
-            background-color: white;
-        }
-
-        .menu-mobile {
-            display: none;
-            flex-direction: column;
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            background-color: rgba(0, 0, 0, 0.9);
-            padding: 20px;
-            border-radius: 8px;
-            z-index: 3;
-        }
-
-        .menu-mobile a {
-            padding: 10px;
-            font-size: 1.2rem;
-            text-align: center;
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .menu-mobile a:hover {
-            background-color: #2980b9;
-        }
-
-        .menu-mobile.show {
-            display: flex;
-        }
-
+        /* Services Section */
         .content {
             padding: 20px;
-            z-index: 1;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 30px;
             margin: 0 auto;
             max-width: 1200px;
-            flex-grow: 1;
-            align-items: center;
         }
 
         .service {
@@ -128,10 +103,12 @@
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             text-align: center;
-            opacity: 0;
-            transform: translateY(50px);
-            animation: fadeIn 0.8s ease forwards;
             transition: all 0.3s ease-in-out;
+        }
+
+        .service img {
+            width: 80px;
+            margin-bottom: 15px;
         }
 
         .service:hover {
@@ -140,26 +117,13 @@
             background: rgba(255, 255, 255, 1);
         }
 
-        .service button:hover {
-            background-color: #1a6d98;
-            transform: scale(1.05);
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* Footer Section */
         footer {
             width: 100%;
             padding: 10px;
             background-color: rgba(0, 0, 0, 0.85);
             color: white;
             text-align: center;
-            position: relative;
-            z-index: 2;
         }
 
         footer a {
@@ -171,136 +135,94 @@
             text-decoration: underline;
         }
 
-        /* Mobile-friendly adjustments */
-        @media (max-width: 480px) {
-            header {
-                flex-direction: column;
-                text-align: left;
-            }
+        .social-icons {
+            margin-top: 10px;
+        }
 
-            .logo {
-                font-size: 1.6rem;
-            }
+        .social-icons img {
+            width: 30px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
 
-            header nav {
-                display: none;
-            }
-
-            .hamburger {
-                display: flex;
-
-            }
-
-            .menu-mobile {
-                display: none;
-            }
-
-            .menu-mobile.show {
-                display: flex;
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 2rem;
             }
 
             .content {
-                padding: 10px;
                 flex-direction: column;
                 gap: 15px;
             }
 
             .service {
-                max-width: 80%;
+                max-width: 90%;
                 flex: 1 1 100%;
-            }
-
-            footer {
-                padding: 15px;
-                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Background Image Element with ID -->
-    <div class="background-image" id="backgroundImage"></div>
-
     <header>
-        <div class="logo">Mechanic Shop</div>
-
-        <div class="hamburger" onclick="toggleMenu()">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-
-        <nav class="menu">
+        <nav>
             <a href="/">Home</a>
             <a href="/about">About Us</a>
             <a href="/services">Services</a>
             <a href="/contact">Contact</a>
         </nav>
-
-        <div class="menu-mobile">
-            <a href="/">Home</a>
-            <a href="/about">About Us</a>
-            <a href="/services">Services</a>
-            <a href="/contact">Contact</a>
-        </div>
     </header>
 
-    <div class="content">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Welcome to GearUp</h1>
+            <p>Your one-stop solution for vehicle maintenance, towing, and parts management.</p>
+            <div class="hero-buttons">
+                <button id="exploreServicesBtn">Explore Services</button>
+                <a href="/signup"><button>Get Started</button></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <div id="servicesSection" class="content">
         <div class="service">
             <h3>Mechanic Services</h3>
             <p>Manage your mechanic shop, track appointments, and organize maintenance logs with ease.</p>
-            <a href="/login"><button>Login to Learn More</button></a>
+            <a href="/login"><button>Learn More</button></a>
         </div>
-
         <div class="service">
             <h3>Spare Parts</h3>
             <p>List and sell spare parts directly to your customers. Manage your inventory seamlessly.</p>
-            <a href="/login"><button>Login to Learn More</button></a>
+            <a href="/login"><button>Learn More</button></a>
         </div>
-
         <div class="service">
             <h3>Towing Services</h3>
-            <p>Offer towing services to users in need. Create premium or free ads to showcase your services effectively</p>
-            <a href="/login"><button>Login to Learn More</button></a>
+            <p>Offer towing services to users in need. Create premium or free ads to showcase your services effectively.</p>
+            <a href="/login"><button>Learn More</button></a>
         </div>
-
         <div class="service">
             <h3>Car Owner App</h3>
             <p>Manage your car maintenance, appointments, and more with our app designed for car owners.</p>
-            <a href="/login"><button>Login to Learn More</button></a>
+            <a href="/login"><button>Learn More</button></a>
         </div>
     </div>
 
     <footer>
         <p>&copy; 2024 Mechanic Shop | <a href="/privacy-policy">Privacy Policy</a></p>
+        <div class="social-icons">
+            <a href="#"><img src="static/images/facebook-icon.png" alt="Facebook"></a>
+            <a href="#"><img src="static/images/twitter-icon.png" alt="Twitter"></a>
+            <a href="#"><img src="static/images/linkedin-icon.png" alt="LinkedIn"></a>
+        </div>
     </footer>
 
     <script>
-        let backgroundImages = [
-            'static/images/back2.webp',
-            'static/images/back3.avif',
-            'static/images/back4.jpg',
-            'static/images/login_12.jpg'
-        ];
-        let currentImageIndex = 0;
-
-        function changeBackgroundImage() {
-            if (window.innerWidth < 768) {
-                document.getElementById("backgroundImage").style.backgroundImage = "url('static/images/back4.jpg')";
-            } else {
-                currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
-                document.getElementById("backgroundImage").style.backgroundImage = "url('" + backgroundImages[currentImageIndex] + "')";
-            }
-        }
-
-        changeBackgroundImage();
-        setInterval(changeBackgroundImage, 5000);
-
-        window.addEventListener('resize', changeBackgroundImage);
-
-        function toggleMenu() {
-            document.querySelector('.menu-mobile').classList.toggle('show');
-        }
+        // Scroll to services section when the button is clicked
+        document.getElementById("exploreServicesBtn").addEventListener("click", function() {
+            document.getElementById("servicesSection").scrollIntoView({ behavior: "smooth" });
+        });
     </script>
 </body>
 </html>
