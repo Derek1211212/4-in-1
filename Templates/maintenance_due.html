@@ -6,6 +6,14 @@
     <title>Maintenance Due</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
+        /* Prevent horizontal scrolling */
+        html, body {
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
         /* Navigation bar styling */
         .navbar {
             background-color: #343a40; /* Dark color */
@@ -69,7 +77,7 @@
             bottom: 0;
         }
 
-  /* Flash message styles */
+        /* Flash message styles */
         .flash-message {
             padding: 10px;
             margin-bottom: 15px;
@@ -86,8 +94,6 @@
             background-color: #dc3545;
             color: white;
         }
-
-
     </style>
 </head>
 <body>
@@ -100,11 +106,10 @@
         <a href="{{ url_for('homepage') }}">Contact</a>
     </div>
 
-    
     <div class="container">
         <h1>Maintenance Due</h1>
 
- <!-- Flash message display -->
+        <!-- Flash message display -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -112,7 +117,6 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-
 
         <form method="POST">
             <button type="submit" class="btn btn-primary">Send Notification Emails</button>

@@ -53,42 +53,76 @@
             margin-bottom: 20px;
         }
 
-        /* Filter Section */
-        .filter-container {
-            display: inline-block;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+       /* Filter Section */
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
-        .filter-container label {
-            font-size: 16px;
-            margin-right: 10px;
-        }
+.filter-item {
+    flex: 1 1 100%; /* Full width on small screens */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
 
-        .filter-container select,
-        .filter-container input {
-            padding: 8px 15px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
+.filter-item label {
+    font-size: 14px;
+    font-weight: bold;
+}
 
-        .filter-container button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+.date-inputs {
+    display: flex;
+    gap: 10px;
+}
 
-        .filter-container button:hover {
-            background-color: #218838;
-        }
+.filter-container select,
+.filter-container input {
+    padding: 8px 15px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%; /* Ensure full width for inputs */
+}
+
+.btn-filter {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    flex: 1 1 auto; /* Let the button take available space */
+    text-align: center;
+}
+
+.btn-filter:hover {
+    background-color: #218838;
+}
+
+@media (min-width: 768px) {
+    .filter-container {
+        flex-wrap: nowrap;
+        align-items: flex-end;
+    }
+
+    .filter-item {
+        flex: 1; /* Equal width for filter items on larger screens */
+    }
+
+    .btn-filter {
+        flex: 0 1 auto; /* Adjust button to not stretch too much */
+    }
+}
+
 
         /* Stats Cards */
         .card-container {
@@ -183,25 +217,29 @@
         <h1>Ad Performance for: {{ ad_name }}</h1>
 
         <!-- Filter Section -->
-        <div class="filter-container">
-            <div>
-                <label for="stat-type">Select Stat:</label>
-                <select id="stat-type">
-                    <option value="impression">Impressions</option>
-                    <option value="click">Visitors</option>
-                    <option value="contact_reveal">Phone Number Reveals</option>
-                    <option value="all">All</option>
-                </select>
-            </div>
+        <!-- Filter Section -->
+<div class="filter-container">
+    <div class="filter-item">
+        <label for="stat-type">Select Stat:</label>
+        <select id="stat-type">
+            <option value="impression">Impressions</option>
+            <option value="click">Visitors</option>
+            <option value="contact_reveal">Phone Number Reveals</option>
+            <option value="all">All</option>
+        </select>
+    </div>
 
-            <div>
-                <label for="date-range">Select Date Range:</label>
-                <input type="date" id="start-date">
-                <input type="date" id="end-date">
-            </div>
-
-            <button class="btn-filter" onclick="filterStats()">Filter</button>
+    <div class="filter-item">
+        <label for="date-range">Select Date Range:</label>
+        <div class="date-inputs">
+            <input type="date" id="start-date">
+            <input type="date" id="end-date">
         </div>
+    </div>
+
+    <button class="btn-filter" onclick="filterStats()">Filter</button>
+</div>
+
 
         <!-- Stats Cards Container -->
         <div class="card-container">

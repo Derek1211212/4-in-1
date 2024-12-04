@@ -6,20 +6,24 @@
     <title>Revenue Summary</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
-        /* Base styling for the body */
+        /* Ensure proper box-sizing */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Body styling */
         body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
             margin: 0;
+            padding: 0;
             font-family: 'Roboto', sans-serif;
             background-color: #f8f9fa;
             color: #343a40;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
 
         /* Header styling */
         nav {
-            background-color: #007bff;
+            background-color: #333;
             padding: 15px;
             color: white;
             display: flex;
@@ -33,7 +37,8 @@
             font-size: 24px;
         }
 
-        nav ul {
+        /* Navigation menu styling */
+        .nav-menu {
             list-style-type: none;
             margin: 0;
             padding: 0;
@@ -57,15 +62,53 @@
             background-color: #0056b3;
         }
 
+        /* Hamburger menu styling */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+        }
+
+        /* Responsive styles for navigation */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 60px;
+                right: 15px;
+                background-color: #007bff;
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+        }
+
         /* Main content container */
         .container {
-            flex: 1;
+            padding: 20px;
+            margin: 20px;
             background-color: #ffffff;
-            padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-            max-width: 1100px;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         h3 {
@@ -75,7 +118,7 @@
         }
 
         form {
-            display: flex;
+            display: inline-grid;
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
@@ -108,9 +151,8 @@
 
         /* Table container styling */
         .table-container {
-            border-radius: 8px;
-            max-width: 100%;
             overflow-x: auto;
+            max-width: 100%;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -171,13 +213,14 @@
 
         /* Footer styling */
         footer {
-            background-color: #007bff;
+            background-color: #333;
             color: white;
             text-align: center;
-            padding: 15px;
+            padding: 10px;
+            position: absolute;
+            bottom: 0;
             width: 100%;
             margin-top: auto;
-            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
         }
 
         footer a {
@@ -190,24 +233,19 @@
             text-decoration: underline;
         }
 
-        /* Responsive design */
+        /* Ensure layout doesn't extend beyond screen on small devices */
         @media (max-width: 768px) {
-            form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            form label {
-                margin-bottom: 5px;
-            }
-
-            form input[type="date"], form button {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-
             .container {
-                padding: 20px;
+                padding: 15px;
+                margin: 10px;
+            }
+
+            table, th, td {
+                font-size: 14px; /* Adjust font size for smaller screens */
+            }
+
+            th, td {
+                padding: 8px; /* Reduce padding */
             }
         }
     </style>
@@ -215,7 +253,12 @@
 <body>
     <nav>
         <h1>Revenue Dashboard</h1>
-        <ul>
+        <div class="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <ul class="nav-menu">
             <li><a href="#">Home</a></li>
             <li><a href="#">Reports</a></li>
             <li><a href="#">Settings</a></li>
@@ -274,7 +317,15 @@
     </div>
 
     <footer>
-        &copy; 2024 <a href="#">Your Company Name</a>. All rights reserved.
+        <p>&copy; 2024 Your App Name. All rights reserved.</p>
+        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
     </footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.querySelector('.nav-menu');
+            menu.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
