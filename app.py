@@ -139,7 +139,10 @@ def login_required(f):
 	    return decorated_function
 
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> f5c54432449f5612f89b004a16822f6fca23aac2
 @app.route('/')
 def home():
     return render_template('Homepage.html')
