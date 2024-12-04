@@ -30,6 +30,11 @@ logging.basicConfig(level=logging.DEBUG)  # Capture debug-level logs
 
 # Flask app instantiation
 app = Flask(__name__, template_folder='Templates')
+
+# Set up secret key from environment variable
+app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')  # Use a fallback if not set
+
+# Set logging level
 app.logger.setLevel(logging.DEBUG)
 
 def get_db_connection():
