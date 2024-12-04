@@ -5,6 +5,7 @@ import logging
 import mysql.connector
 import math
 from mysql.connector import Error
+from dotenv import load_dotenv
 import os
 import pandas as pd
 import io
@@ -33,6 +34,8 @@ app = Flask(__name__, template_folder='Templates')
 
 # Set up secret key from environment variable
 app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')  # Use a fallback if not set
+
+load_dotenv()
 
 # Set logging level
 app.logger.setLevel(logging.DEBUG)
@@ -381,7 +384,7 @@ def view_customers():
     user_id = session.get('user_id')  # Ensure this is set during login
 
     # Base query to fetch customers filtered by user_id
-    base_query = "SELECT * FROM Customer WHERE user_id = %s"
+    base_query = "SELECT * FROM customer WHERE user_id = %s"
     query_params = [user_id]
 
     # Check if the request is POST (searching)
