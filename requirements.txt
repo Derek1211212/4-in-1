@@ -9,3 +9,16 @@ MarkupSafe==3.0.1
 packaging==24.2
 PyMySQL==1.1.1
 Werkzeug==3.0.4
+mysql-connector-python
+pandas
+apscheduler
+requests
+geopy
+psycopg2-binary
+flask-mail
+
+
+
+
+
+

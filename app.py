@@ -1,12 +1,10 @@
 from flask import Flask, jsonify, request, render_template, session, redirect, url_for, flash
 from werkzeug.security import check_password_hash
-
 from datetime import datetime
 import logging
 import mysql.connector
 import math
 from mysql.connector import Error
-from config import Config
 import os
 import pandas as pd
 import io
@@ -27,28 +25,38 @@ import psycopg2.extras
 from functools import lru_cache
 from flask_mail import Mail, Message
 
-
-
+# Logging setup
 logging.basicConfig(level=logging.DEBUG)  # Capture debug-level logs
-app = Flask(__name__)
-app.config.from_object(Config)
+
+# Flask app instantiation
+app = Flask(__name__, template_folder='Templates')
+
+# Set up secret key from environment variable
+app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')  # Use a fallback if not set
+
+# Set logging level
 app.logger.setLevel(logging.DEBUG)
 
 def get_db_connection():
     try:
-        # Print database credentials for debugging
-        app.logger.debug(f"Connecting to database with credentials: "
-                         f"Host: {app.config['MYSQL_HOST']}, "
-                         f"User: {app.config['MYSQL_USER']}, "
-                         f"Database: {app.config['MYSQL_DB']}, "
-                         f"Port: {app.config['MYSQL_PORT']}")
+        # Fetch database credentials from environment variables
+        host = os.getenv('MYSQL_HOST')
+        user = os.getenv('MYSQL_USER')
+        password = os.getenv('MYSQL_PASSWORD')
+        database = os.getenv('MYSQL_DB')
+        port = int(os.getenv('MYSQL_PORT', 3306))  # Default to port 3306 if not set
 
+        # Log database credentials for debugging (remove in production)
+        app.logger.debug(f"Connecting to database with credentials: "
+                         f"Host: {host}, User: {user}, Database: {database}, Port: {port}")
+
+        # Establish the database connection
         connection = mysql.connector.connect(
-            host=app.config['MYSQL_HOST'],
-            user=app.config['MYSQL_USER'],
-            password=app.config['MYSQL_PASSWORD'],
-            database=app.config['MYSQL_DB'],
-            port=app.config['MYSQL_PORT']  # Use the port from the config
+            host=host,
+            user=user,
+            password=password,
+            database=database,
+            port=port
         )
         if connection.is_connected():
             app.logger.info("Database connection established successfully.")
@@ -59,6 +67,7 @@ def get_db_connection():
 
 
 from datetime import datetime, timedelta
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -128,6 +137,7 @@ def login_required(f):
 	            return redirect(url_for('login'))
 	        return f(*args, **kwargs)
 	    return decorated_function
+
 
 
 @app.route('/')
