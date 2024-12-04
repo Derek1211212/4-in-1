@@ -16,6 +16,8 @@ requests
 geopy
 psycopg2-binary
 flask-mail
+python-dotenv
+
 
 
 
