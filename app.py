@@ -2291,7 +2291,7 @@ def log_impression(ad_id):
 from datetime import datetime  # Correct import
 
 @app.route('/shopping', methods=['GET', 'POST'])
-@login_required
+
 def shopping_page():
     user_latitude = None
     user_longitude = None
@@ -3374,7 +3374,7 @@ def update_towing_ad_info(ad_id):
 
 # Route to access the nearby ads page
 @app.route('/nearby_ads')
-@login_required
+
 def nearby_ads():
     return render_template('nearby_ads.html')
 
