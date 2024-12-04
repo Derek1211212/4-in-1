@@ -420,7 +420,7 @@ def edit_customer(customer_id):
         emergency_contact_number = request.form['emergency_contact_number']
         
         query = """
-            UPDATE Customer SET full_name = %s, phone_number = %s, email_address = %s,
+            UPDATE customer SET full_name = %s, phone_number = %s, email_address = %s,
                                 address = %s, communication_pref = %s,
                                 emergency_contact_name = %s, emergency_contact_number = %s
             WHERE customer_id = %s
@@ -436,7 +436,7 @@ def edit_customer(customer_id):
 
     # Fetch the customer data for the given customer_id to pre-fill the form
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM Customer WHERE customer_id = %s", (customer_id,))
+    cursor.execute("SELECT * FROM customer WHERE customer_id = %s", (customer_id,))
     customer = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -452,7 +452,7 @@ def delete_customer(customer_id):
     cursor = conn.cursor()
 
     # Delete the customer from the database
-    query = "DELETE FROM Customer WHERE customer_id = %s"
+    query = "DELETE FROM customer WHERE customer_id = %s"
     cursor.execute(query, (customer_id,))
     conn.commit()
 
@@ -640,7 +640,7 @@ def add_maintenance_log():
         return redirect(url_for('view_maintenance_logs'))
 
     # Query mechanics to display in the dropdown
-    cursor.execute("SELECT employee_id AS user_id, employee_name AS name FROM Company_Employees WHERE role = 'mechanic'")
+    cursor.execute("SELECT employee_id AS user_id, employee_name AS name FROM company_employees WHERE role = 'mechanic'")
     mechanics = cursor.fetchall()
 
     # Query service types to display in the dropdown
