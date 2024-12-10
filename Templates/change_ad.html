@@ -6,78 +6,116 @@
     <title>Edit Ad</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         nav {
             background-color: #333;
             padding: 15px;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         nav a {
-            color: white;
+            color: #fff;
             margin: 0 15px;
             text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ffa500;
         }
 
         .container {
-            padding: 20px;
+            flex: 1;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .form-container {
             max-width: 600px;
-            margin: 0 auto;
+            width: 100%;
             background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .form-container h2 {
             text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
             margin-bottom: 20px;
+            text-align: center;
+            font-size: 1rem;
         }
 
-        .form-container label {
+        label {
             font-size: 16px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: block;
+            font-weight: 500;
         }
 
-        .form-container input,
-        .form-container select,
-        .form-container textarea {
+        input[type="text"],
+        input[type="number"],
+        select, textarea {
             width: 100%;
-            padding: 10px;
-            font-size: 16px;
+            padding: 12px;
+            margin-bottom: 20px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 15px;
+            border-radius: 5px;
+            font-size: 1rem;
         }
 
-        .form-container button {
+        button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             font-size: 16px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-weight: 500;
         }
 
-        .form-container button:hover {
+        button:hover {
             background-color: #45a049;
+            transform: translateY(-3px);
         }
 
-        .form-container .cancel-btn {
+        .cancel-btn {
+            display:block;
+            text-align: center;
+            margin-top: 10px;
+            text-decoration: none;
+        }
+
+        .cancel-btn button {
             background-color: #f44336;
         }
 
-        .form-container .cancel-btn:hover {
+        .cancel-btn button:hover {
             background-color: #e53935;
         }
 
@@ -85,11 +123,19 @@
             background-color: #333;
             color: white;
             text-align: center;
-            padding: 5px 0;
-            position: fixed;
+            padding: 15px 0;
+            position: relative;
             bottom: 0;
             width: 100%;
         }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
     </style>
 </head>
 <body>
@@ -154,8 +200,6 @@
                 <label for="price">Price</label>
                 <input type="number" name="price" id="price" value="{{ ad['price'] }}" step="0.01" required>
 
-               
-
                 <!-- Part Description -->
                 <label for="part_description">Part Description</label>
                 <textarea name="part_description" id="part_description" rows="4" required>{{ ad['part_description'] }}</textarea>
@@ -171,7 +215,7 @@
                 <!-- Display Current Image -->
                 {% if ad['image1'] %}
                     <h3>Current Image</h3>
-                    <img src="{{ url_for('static', filename='images/' + ad['image1']) }}" alt="Ad Image" style="width:100%; height:auto;">
+                    <img src="{{ url_for('static', filename='images/' + ad['image1']) }}" alt="Ad Image">
                 {% endif %}
 
                 <button type="submit">Save Changes</button>

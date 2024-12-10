@@ -2053,6 +2053,104 @@ def uploaded_ads():
     return render_template('uploaded_ads.html', ads=ads)
 
 
+@app.route('/promote-ad/<int:ad_id>', methods=['POST'])
+@login_required
+def promote_ad(ad_id):
+    user_id = session.get('user_id')
+
+    # Fetch ad details to ensure the user owns the ad and it's eligible for promotion
+    conn = get_db_connection()
+    if conn:
+        cursor = conn.cursor(dictionary=True)
+        try:
+            cursor.execute("""
+                SELECT status
+                FROM shopping
+                WHERE ad_id = %s AND user_id = %s
+            """, (ad_id, user_id))
+            ad = cursor.fetchone()
+
+            if not ad or ad['status'] != 'Free':
+                return redirect(url_for('uploaded_ads'))  # Invalid promotion attempt
+
+            # Initialize payment with Paystack
+            payment_url = initiate_paystack_payment(ad_id, user_id)
+            return redirect(payment_url)
+
+        except Exception as e:
+            app.logger.error(f"Error promoting ad: {e}")
+        finally:
+            cursor.close()
+            conn.close()
+
+    return redirect(url_for('uploaded_ads'))
+
+
+
+
+PAYSTACK_PUBLIC_KEY = 'pk_test_687e15c55aa4b8225311e136ff9c267baf07ec4b'
+PAYSTACK_SECRET_KEY = 'sk_test_9841b94baa622b81bc86987313d32a4eed88a9bf'  # Replace with your secret key
+
+def initiate_paystack_payment(ad_id, user_id):
+    payment_data = {
+        "email": 'Derickbill3@gmail.com',  # User's email from session
+        "amount": 5000 * 100,  # Amount in kobo (GHS 50.00 example)
+        "callback_url": url_for('confirm_payment', ad_id=ad_id, _external=True),
+        "metadata": {
+            "ad_id": ad_id,
+            "user_id": user_id
+        }
+    }
+
+    headers = {
+        "Authorization": f"Bearer {PAYSTACK_SECRET_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post("https://api.paystack.co/transaction/initialize", json=payment_data, headers=headers)
+    response_data = response.json()
+
+    if response_data['status']:
+        return response_data['data']['authorization_url']
+    else:
+        raise Exception(f"Paystack payment initialization failed: {response_data['message']}")
+
+
+
+
+@app.route('/confirm-payment/<int:ad_id>', methods=['GET'])
+def confirm_payment(ad_id):
+    ref = request.args.get('reference')
+    if not ref:
+        return redirect(url_for('uploaded_ads'))
+
+    # Verify payment with Paystack
+    headers = {
+        "Authorization": f"Bearer {PAYSTACK_SECRET_KEY}"
+    }
+    response = requests.get(f"https://api.paystack.co/transaction/verify/{ref}", headers=headers)
+    response_data = response.json()
+
+    if response_data['status'] and response_data['data']['status'] == 'success':
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor()
+            try:
+                cursor.execute("""
+                    UPDATE shopping
+                    SET status = 'Premium', payment_status = 'Paid'
+                    WHERE ad_id = %s
+                """, (ad_id,))
+                conn.commit()
+            finally:
+                cursor.close()
+                conn.close()
+
+    return redirect(url_for('uploaded_ads'))
+
+
+
+
 
 @app.route('/change-ad/<int:ad_id>', methods=['GET', 'POST'])
 def change_ad(ad_id):
@@ -2124,77 +2222,89 @@ def change_ad(ad_id):
 @app.route('/upload-part', methods=['GET', 'POST'])
 @login_required
 def upload_part():
-    # Fetch user_id from session
     user_id = session.get('user_id')
-
-    # Get total ads and estimated revenue
     conn = get_db_connection()
+
     if conn:
         cursor = conn.cursor()
         try:
-            # Query to count total ads uploaded by the current user
+            # Fetch stats for rendering
             cursor.execute("SELECT COUNT(ad_id) FROM shopping WHERE user_id = %s", (user_id,))
             total_ads = cursor.fetchone()[0]
-
-            # Query to sum up the 'Product_Price' values for the current user
             cursor.execute("SELECT SUM(price) FROM shopping WHERE user_id = %s", (user_id,))
-            total_revenue = cursor.fetchone()[0] or 0  # Default to 0 if no ads exist
+            total_revenue = cursor.fetchone()[0] or 0
 
-            # Process form submission for uploading part
             if request.method == 'POST':
-                try:
-                    # Default to 'Free' if not paid
-                    payment_status = 'Free'
+                shop_name = request.form['shop_name']
+                part_category = request.form['part_category']
+                part_name = request.form['part_name']
+                part_description = request.form['part_description']
+                seller_contact = request.form['seller_contact']
+                product_price = float(request.form['product_price'])
+                images = request.files.getlist('images')
+                brand = request.form['brand']
+                condition = request.form['condition']
+                latitude = request.form.get('latitude')
+                longitude = request.form.get('longitude')
 
-                    # Check if the form is for paid submission
-                    if 'payment_status' in request.form and request.form['payment_status'] == 'Paid':
-                        payment_status = 'Paid'  # Set payment status to 'Paid' if it's a paid upload
+                # Handle images
+                image_paths = []
+                for image in images[:4]:
+                    if image:
+                        filename = secure_filename(image.filename)
+                        image_path = os.path.join('static/images', filename)
+                        image.save(image_path)
+                        image_paths.append(filename)
 
-                    # Form data for the part being uploaded
-                    shop_name = request.form['shop_name']
-                    part_category = request.form['part_category']
-                    part_name = request.form['part_name']
-                    part_description = request.form['part_description']  # New field for description
-                    seller_contact = request.form['seller_contact']  # New field for seller contact
-                    product_price = float(request.form['product_price'])  # New field for price
-                    status = "Premium" if payment_status == 'Paid' else "Free"  # Premium for paid ads, free for free ads
-                    images = request.files.getlist('images')  # Get all images uploaded
-                    brand = request.form['brand']
-                    condition = request.form['condition']
+                payment_status = "Free"
+                status = "Free"
+                payment_reference = None
 
-                    # Save images
-                    image_paths = []
-                    for image in images[:4]:  # Limit to 4 images
-                        if image:
-                            filename = secure_filename(image.filename)
-                            image_path = os.path.join('static/images', filename)
-                            image.save(image_path)
-                            image_paths.append(filename)
+                # Check if the form is for a paid ad
+                if 'payment_status' in request.form and request.form['payment_status'] == 'Paid':
+                    # Start payment verification process
+                    payment_reference = request.form.get('payment_reference')
+                    secret_key = 'sk_test_9841b94baa622b81bc86987313d32a4eed88a9bf'
+                    verification_url = f'https://api.paystack.co/transaction/verify/{payment_reference}'
+                    headers = {'Authorization': f'Bearer {secret_key}'}
 
-                    # Insert into the database with the provided details
-                    cursor.execute("""
-                        INSERT INTO shopping (shop_name, part_category, part_name, part_description, seller_contact, price, status, payment_status, user_id, image1, image2, image3, image4, brand, condition)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """, (shop_name, part_category, part_name, part_description, seller_contact, product_price, status, payment_status, user_id, *image_paths, brand, condition))
-                    conn.commit()
+                    response = requests.get(verification_url, headers=headers)
+                    payment_data = response.json()
 
-                    # Return success response
-                    return jsonify(status='success', message='Part uploaded successfully.')
+                    if payment_data.get('data', {}).get('status') == 'success':
+                        payment_status = "Paid"
+                        status = "Premium"
+                    else:
+                        return render_template('upload_part.html', total_ads=total_ads, total_revenue=total_revenue, error_message="Payment verification failed.")
 
-                except Exception as e:
-                    app.logger.error(f"Error inserting data: {e}")
-                    return jsonify(status='error', message='Failed to upload part.'), 500
+                # Insert the ad with payment_reference
+                cursor.execute("""
+                    INSERT INTO shopping (
+                        shop_name, part_category, part_name, part_description, 
+                        seller_contact, price, status, payment_status, user_id, 
+                        image1, image2, image3, image4, brand, `condition`, 
+                        latitude, longitude, payment_reference
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    shop_name, part_category, part_name, part_description, seller_contact,
+                    product_price, status, payment_status, user_id, *image_paths, brand,
+                    condition, latitude, longitude, payment_reference
+                ))
 
-            # Render the template for the upload page with statistics
+                conn.commit()
+                return render_template('upload_part.html', total_ads=total_ads, total_revenue=total_revenue, success_message="Ad uploaded successfully.")
+
             return render_template('upload_part.html', total_ads=total_ads, total_revenue=total_revenue)
 
         except Exception as e:
-            app.logger.error(f"Error fetching stats: {e}")
-            return jsonify(status='error', message='Failed to retrieve statistics.'), 500
+            app.logger.error(f"Error: {e}")
+            return render_template('upload_part.html', error_message="An error occurred.")
         finally:
             cursor.close()
     else:
-        return jsonify(status='error', message='Database connection failed.'), 500
+        return render_template('uploaded_ads.html', error_message="Database connection failed.")
+
+
 
 
 
@@ -2238,6 +2348,11 @@ def upload_part_direct():
     price = float(request.form['product_price'])  # Get the product price from the form
     status = "Free"  # Direct upload, no payment
     images = request.files.getlist('images')  # Get all images uploaded
+    latitude = request.form.get('latitude')
+    longitude = request.form.get('longitude')
+
+    if not latitude or not longitude:
+        return render_template('upload_part.html', error_message="Location data is missing."), 400
 
     # Handle image paths
     image_paths = []
@@ -2254,22 +2369,34 @@ def upload_part_direct():
         cursor = conn.cursor()
         try:
             # Insert into the database
-            cursor.execute(""" 
-                INSERT INTO shopping (shop_name, part_category, part_name, price, status, user_id, image1, image2, image3, image4)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (shop_name, part_category, part_name, price, status, user_id, *image_paths))
+            cursor.execute("""
+                INSERT INTO shopping (
+                    shop_name, part_category, part_name, price, status, user_id, 
+                    image1, image2, image3, image4, latitude, longitude
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                shop_name, part_category, part_name, price, status, user_id, 
+                *image_paths, latitude, longitude
+            ))
+
             conn.commit()
 
-            # Return success response
-            return jsonify(status='success', message='Part uploaded successfully.')
+            # Redirect to the uploaded ads page
+            return redirect(url_for('uploaded_ads'))
 
         except Exception as e:
             app.logger.error(f"Error inserting data: {e}")
-            return jsonify(status='error', message='Failed to upload part.'), 500
+            return render_template('upload_part.html', error_message="An error occurred while uploading."), 500
         finally:
             cursor.close()
     else:
-        return jsonify(status='error', message='Database connection failed.'), 500
+        return render_template('upload_part.html', error_message="Database connection failed."), 500
+
+
+
+
+
+
 
 
 
@@ -3760,6 +3887,8 @@ def mechanic_shops():
                 })
             mechanic_list.sort(key=lambda x: x['distance'])  # Sort by proximity
 
+            print(mechanic_list)  # Debugging: check if latitude and longitude are present
+
             return render_template('mechanic_list.html', mechanics=mechanic_list)
 
     # Default behavior: fetch and display all ads when no location is entered or the page is first loaded
@@ -3770,11 +3899,38 @@ def mechanic_shops():
             m.working_hours, 
             m.service_locations, 
             m.company_image, 
+            m.latitude,  -- Include latitude
+            m.longitude, -- Include longitude
             m.contact, 
             GROUP_CONCAT(s.description SEPARATOR ', ') AS service_descriptions 
         FROM mechanic m
         LEFT JOIN services s ON m.mechanic_id = s.mechanic_id
         GROUP BY m.mechanic_id
+    """)
+    mechanics = cursor.fetchall()
+
+    print(mechanics)  # Debugging: check if latitude and longitude are present
+
+    return render_template('mechanic_list.html', mechanics=mechanics)
+
+
+    # Default behavior: fetch and display all ads when no location is entered or the page is first loaded
+    cursor.execute("""
+        SELECT 
+            m.mechanic_id, 
+            m.name, 
+            m.working_hours, 
+            m.service_locations, 
+            m.company_image, 
+            m.latitude,  -- Include latitude
+            m.longitude, -- Include longitude
+            m.contact, 
+            GROUP_CONCAT(s.description SEPARATOR ', ') AS service_descriptions 
+        FROM mechanic m
+        LEFT JOIN services s ON m.mechanic_id = s.mechanic_id
+        GROUP BY m.mechanic_id
+
+
     """)
     mechanics = cursor.fetchall()
 

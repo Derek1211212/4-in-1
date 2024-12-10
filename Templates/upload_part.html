@@ -196,7 +196,7 @@
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/upload-part">Upload Part</a></li>
-                <li><a href="/my-ads">My Ads</a></li>
+                <li><a href="/uploaded-ads">My Ads</a></li>
                 <li><a href="/logout">Logout</a></li>
             </ul>
         </nav>
@@ -238,17 +238,15 @@
             <option value="Infotainment and Electronics">Infotainment and Electronics</option>
         </select>
 
-         <label for="brand">Brand:</label>
-    <input type="text" id="brand" name="brand" required>
+        <label for="brand">Brand:</label>
+        <input type="text" id="brand" name="brand" required>
 
-    <label for="condition">Condition:</label>
-    <select id="condition" name="condition" required>
-        <option value="New">New</option>
-        <option value="Used">Used</option>
-        <option value="Slightly Used">Slightly Used</option>
-    </select>
-
-    
+        <label for="condition">Condition:</label>
+        <select id="condition" name="condition" required>
+            <option value="New">New</option>
+            <option value="Used">Used</option>
+            <option value="Slightly Used">Slightly Used</option>
+        </select>
 
         <label for="part_name">Part Name:</label>
         <input type="text" id="part_name" name="part_name" required>
@@ -262,16 +260,25 @@
         <label for="product_price">Price (GHS):</label>
         <input type="text" id="product_price" name="product_price" required>
 
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude">
+
+        <!-- Hidden Inputs for Status and Payment Status -->
+<input type="hidden" id="status" name="status" value="Free">
+<input type="hidden" id="payment_status" name="payment_status" value="Free">
+<input type="hidden" id="payment_reference" name="payment_reference">
+
+
         <label for="images">Upload Images (up to 4):</label>
         <input type="file" name="images" accept="image/*" multiple required>
 
-        <button id="getLocationButton" style="margin: 20px auto; display: block;">Set Shop Location</button>
+        <button type="button" id="getLocationButton">Set Shop Location</button>
         <button type="button" id="freeUploadButton">Upload for Free</button>
         <br>
-        <button type="button" id="paidUploadButton">Upload with Payment</button>
+        <button type="button" id="payButton">Upload with Payment</button>
     </form>
 
-    <a href="/uploaded-ads" class="view-ads-button">View My Uploaded Ads</a>
+    
 
     <footer>
         &copy; 2024 Spare Parts App. All rights reserved. |
@@ -279,11 +286,83 @@
         <a href="/terms">Terms of Service</a>
     </footer>
 
-    <script>
-        function toggleMenu() {
-            const nav = document.querySelector("header nav");
-            nav.classList.toggle("show-nav");
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Geolocation Script
+    var getLocationButton = document.getElementById('getLocationButton');
+    if (getLocationButton) {
+        getLocationButton.addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Set the latitude and longitude in the hidden inputs
+                    document.getElementById('latitude').value = position.coords.latitude;
+                    document.getElementById('longitude').value = position.coords.longitude;
+                    alert("Location set! You can now proceed with the upload.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        });
+    }
+
+    // Handle Free Upload
+var freeUploadButton = document.getElementById('freeUploadButton');
+    if (freeUploadButton) {
+        freeUploadButton.addEventListener('click', function() {
+            // Set status to Free and payment status to Free
+            document.getElementById('status').value = "Free";
+            document.getElementById('payment_status').value = "Free";
+
+            // Submit the form for free upload
+            document.getElementById('uploadForm').submit();
+        });
+    }
+
+    // Handle Paystack Payment
+// Handle Paystack Payment
+var payButton = document.getElementById('payButton');
+if (payButton) {
+    payButton.addEventListener('click', function() {
+        var confirmation = confirm("Are you sure you want to upload this part with payment?");
+        if (confirmation) {
+            var handler = PaystackPop.setup({
+                key: 'pk_test_687e15c55aa4b8225311e136ff9c267baf07ec4b', // Replace with your public key
+                email: 'derickbill3@gmail.com', // Use seller contact or any other user email
+                amount: document.getElementById('product_price').value * 100, // Convert amount to kobo (for GHS, use Pesewas)
+                currency: 'GHS',
+                callback: function(response) {
+                    // Payment was successful
+                    alert("Payment successful! Reference: " + response.reference);
+
+                    // Set the hidden fields
+                    document.getElementById('status').value = "Premium";
+                    document.getElementById('payment_status').value = "Paid";
+                    document.getElementById('payment_reference').value = response.reference;
+
+                    // Submit the form
+                    document.getElementById('uploadForm').submit();
+                },
+                onClose: function() {
+                    alert("Payment process cancelled.");
+                }
+            });
+            handler.openIframe();
         }
-    </script>
+    });
+}
+
+});
+
+
+</script>
+<script>
+function toggleMenu() {
+    const nav = document.querySelector('nav');
+    nav.classList.toggle('show-nav');
+}
+</script>
+
+
 </body>
 </html>
