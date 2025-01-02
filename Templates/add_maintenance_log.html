@@ -86,7 +86,7 @@
 
         <!-- Parts Used -->
         <label for="parts_used">Parts Used:</label>
-        <input type="text" id="parts_used" name="parts_used">
+        <input type="text" id="parts_used" name="parts_used" placeholder="Separate parts with commas" required>
 
         <!-- Cost of Parts -->
         <label for="cost_of_parts">Cost of Parts:</label>
@@ -106,15 +106,12 @@
 
         <!-- Next Scheduled Service -->
         <label for="next_scheduled_service">Next Scheduled Service:</label>
-        <input type="date" id="next_scheduled_service" name="next_scheduled_service" required>
+        <input type="date" id="next_scheduled_service" name="next_scheduled_service">
 
-        <!-- Service Type -->
+        <!-- Service Type (Multiple Selection Enabled) -->
         <label for="service_type">Service Type:</label>
-        <select id="service_type" name="service_type" required>
-            <option value="">Select a service type</option>
-            {% for service in services %}
-                <option value="{{ service[0] }}">{{ service[1] }}</option>
-            {% endfor %}
+        <select id="service_type" name="service_type" multiple="multiple" required>
+            <option value="">Select service type(s)</option>
         </select>
 
         <!-- Warranty Information -->
@@ -132,16 +129,51 @@
         <button type="submit">Add Maintenance Log</button>
     </form>
 
-<a href="{{ url_for('view_maintenance_logs') }}">
+    <a href="{{ url_for('view_maintenance_logs') }}">
         <button class="view-logs-button">View Maintenance Logs</button>
+    </a>
+
     <footer>
         <p>&copy; 2024 Your Company Name</p>
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            $('#mechanic_ids').select2();
+        $(document).ready(function() {
+            // Initialize Select2 for Service Type with AJAX for auto-suggestions
+            $('#service_type').select2({
+                placeholder: 'Search for service type(s)',
+                minimumInputLength: 1,  // Start searching after 1 character
+                ajax: {
+                    url: '{{ url_for("search_services") }}',  // Backend route to fetch services
+                    dataType: 'json',
+                    delay: 250,  // Delay for search
+                    data: function(params) {
+                        return {
+                            q: params.term  // Send the typed query to the backend
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data.services.map(function(service) {
+                                return {
+                                    id: service.service_id,  // Service ID
+                                    text: service.name  // Service name for dropdown
+                                };
+                            })
+                        };
+                    }
+                },
+                tags: true,  // Enable tagging (allow typing in new values)
+                createTag: function(params) {
+                    // Allow creation of new tags even if not found in the dropdown
+                    return {
+                        id: params.term,
+                        text: params.term
+                    };
+                }
+            });
         });
     </script>
 </body>

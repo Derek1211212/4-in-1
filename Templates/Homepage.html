@@ -162,6 +162,18 @@ body {
                 flex: 1 1 100%;
             }
         }
+
+
+        .service {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .service.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -169,7 +181,7 @@ body {
         <nav>
             <a href="/shopping">Shop Spare Parts</a> |
             <a href="/nearby_ads">Towing Services</a> |
-            <a href="/signup">Create Mechanic Shop</a>
+            <a href="/mechanic-shops">Mechanic Nearby</a>
         </nav>
     </header>
 
@@ -177,7 +189,7 @@ body {
     <section class="hero">
         <div class="hero-text">
             <h1>Welcome to GearUp</h1>
-            <p>Your one-stop solution for vehicle maintenance, towing, and parts management.</p>
+            <p>Your one-stop solution for vehicle maintenance, towing, and Sales of Vehicle Parts.</p>
             <div class="hero-buttons">
                 <button id="exploreServicesBtn">Explore Services</button>
                 <a href="/signup"><button>Get Started</button></a>
@@ -223,6 +235,24 @@ body {
         document.getElementById("exploreServicesBtn").addEventListener("click", function() {
             document.getElementById("servicesSection").scrollIntoView({ behavior: "smooth" });
         });
+
+        // Animate services on scroll
+        const services = document.querySelectorAll(".service");
+
+        function checkVisibility() {
+            const triggerBottom = window.innerHeight * 0.8;
+
+            services.forEach(service => {
+                const rect = service.getBoundingClientRect();
+
+                if (rect.top < triggerBottom) {
+                    service.classList.add("visible");
+                }
+            });
+        }
+
+        window.addEventListener("scroll", checkVisibility);
+        window.addEventListener("load", checkVisibility); // Ensure animation is triggered on page load
     </script>
 </body>
 </html>

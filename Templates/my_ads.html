@@ -9,15 +9,22 @@
 
 <style>
 /* Basic Styles */
+/* Basic Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+html, body {
+    width: 100%; /* Ensure full width is utilized */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 100%; /* Ensure the container fits within the viewport */
     margin: 0 auto;
     padding: 20px;
 }
@@ -32,6 +39,7 @@ h1 {
     background-color: #333;
     padding: 10px;
     text-align: center;
+    width: 100%;
 }
 
 .navbar a {
@@ -50,12 +58,14 @@ h1 {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+    width: 100%; /* Ensure full width */
 }
 
 .ad-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
+    width: 100%; /* Ensure cards fit within container */
 }
 
 .ad-card {
@@ -65,11 +75,13 @@ h1 {
     padding: 20px;
     text-align: center;
     width: 100%;
+    position: relative; /* Ensures the button is positioned relative to the card */
+    box-sizing: border-box; /* Prevent overflow */
 }
 
 .ad-card img {
     width: 100%;
-    height: auto;
+    height: 250px;
     border-radius: 8px;
     margin-bottom: 15px;
 }
@@ -113,6 +125,28 @@ h1 {
     background-color: #218838;
 }
 
+/* Promote button styling */
+.ad-card .promote-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: lightgreen;
+    color: black;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Absolutely position the promote button in the top-left corner */
+.ad-card .promote-container {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+}
+
+.ad-card .promote-btn:hover {
+    background-color: #e0a800;
+}
+
 p a {
     color: #007bff;
     text-decoration: none;
@@ -128,6 +162,11 @@ p a:hover {
         grid-template-columns: 1fr;
     }
 }
+
+
+
+
+
 </style>
 
 <body>
@@ -137,37 +176,67 @@ p a:hover {
         <a href="/contact">Contact</a>
     </div>
 
-    <div class="container">
-        <h1>My Towing Ads</h1>
-        <div class="ads-list">
-            {% if ads %}
-                <div class="ad-cards">
-                    {% for ad in ads %}
-                        <div class="ad-card">
+   <div class="container">
+    <h1>My Towing Ads</h1>
+    <div class="ads-list">
+        {% if ads %}
+            <div class="ad-cards">
+                {% for ad in ads %}
+                    <div class="ad-card">
+                        <div class="ad-content">
                             {% if ad[6] %}
                                 <img src="{{ url_for('static', filename='images/' + ad[6]) }}" alt="Ad Image">
                             {% endif %}
                             <h3>{{ ad[1] }}</h3>
                             <p>{{ ad[2] }}</p>
-                            <p><strong>Location:</strong> Latitude: {{ ad[3] }}, Longitude: {{ ad[4] }}</p>
                             <p><strong>Premium Ad:</strong> {{ 'Yes' if ad[5] else 'No' }}</p>
-                            <a href="{{ url_for('edit_towing_ad_info', ad_id=ad[0]) }}">Edit</a>
+                            <a style="background-color: green;" href="{{ url_for('edit_towing_ad_info', ad_id=ad[0]) }}">Edit</a>
 
                             <!-- Performance View Link -->
-                            <a href="{{ url_for('ad_performance', ad_id=ad[0]) }}" class="view-performance">View Performance</a>
+                            <a style="background-color: green;" href="{{ url_for('ad_performance', ad_id=ad[0]) }}" >Performance</a>
 
-                                <!-- Delete Button -->
+                            <!-- Delete Button -->
                             <form action="{{ url_for('delete_towing_ad', ad_id=ad[0]) }}" method="POST" style="display:inline;">
                                 <button type="submit" onclick="return confirm('Are you sure you want to delete this ad?');" style="background-color: #dc3545; color: white; padding: 10px 15px; border-radius: 5px; border: none;">Delete</button>
                             </form>
                         </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p>No ads available. <a href="{{ url_for('add_towing_ad') }}">Add a new ad</a>.</p>
-            {% endif %}
-        </div>
+                        
+                        <!-- Promote Button: Only for Free Ads -->
+                        {% if not ad[5] %}
+                            <div class="promote-container">
+                                <button onclick="initiatePayment({{ ad[0] }})" class="promote-btn">Promote</button>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No ads available. <a href="{{ url_for('add_towing_ad') }}">Add a new ad</a>.</p>
+        {% endif %}
     </div>
+</div>
+
+
+
+<script>
+    function initiatePayment(adId) {
+        fetch(`/upgrade_ad/${adId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.payment_url) {
+                // Redirect user to Paystack payment URL
+                window.location.href = data.payment_url;
+            } else {
+                alert(data.message || "Error initiating payment.");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+</script>
+
 
 </body>
 </html>

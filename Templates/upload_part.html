@@ -186,6 +186,38 @@
         footer a:hover {
             text-decoration: underline;
         }
+
+.location-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 20px 0;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-weight: bold;
+    color: red;
+}
+
+
+        /* Flash Message Styles */
+        .flash-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f8d7da;
+            color: red;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #f5c6cb;
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -210,9 +242,14 @@
         <p><strong>Estimated Revenue:</strong> GHS {{ total_revenue }}</p>
     </div>
 
+<div id="flashMessage" class="flash-message"></div>
+
+
+
+
     <form id="uploadForm" method="POST" enctype="multipart/form-data">
         <label for="shop_name">Shop Name:</label>
-        <input type="text" id="shop_name" name="shop_name" required>
+        <input type="text" id="shop_name" name="shop_name" class="required" required>
 
         <label for="part_category">Part Category:</label>
         <select id="part_category" name="part_category" required>
@@ -273,6 +310,7 @@
         <input type="file" name="images" accept="image/*" multiple required>
 
         <button type="button" id="getLocationButton">Set Shop Location</button>
+        <br>
         <button type="button" id="freeUploadButton">Upload for Free</button>
         <br>
         <button type="button" id="payButton">Upload with Payment</button>
@@ -289,73 +327,146 @@
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Geolocation Script
-    var getLocationButton = document.getElementById('getLocationButton');
-    if (getLocationButton) {
-        getLocationButton.addEventListener('click', function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    // Set the latitude and longitude in the hidden inputs
-                    document.getElementById('latitude').value = position.coords.latitude;
-                    document.getElementById('longitude').value = position.coords.longitude;
-                    alert("Location set! You can now proceed with the upload.");
-                });
+    const form = document.getElementById('uploadForm');
+    const freeUploadButton = document.getElementById('freeUploadButton');
+    const payButton = document.getElementById('payButton');
+    const flashMessageElement = document.getElementById('flashMessage');
+
+    // Function to show flash message as a pop-up
+    function showFlashMessage(message) {
+        if (flashMessageElement) {
+            flashMessageElement.textContent = message;
+            flashMessageElement.style.display = 'block'; // Show the flash message
+            setTimeout(function() {
+                hideFlashMessage(); // Hide the flash message after 5 seconds
+            }, 5000);
+        } else {
+            alert(message); // Fallback in case the flash element doesn't exist
+        }
+    }
+
+    // Function to hide flash message
+    function hideFlashMessage() {
+        if (flashMessageElement) {
+            flashMessageElement.style.display = 'none';
+        }
+    }
+
+    // Function to validate form fields and location
+    function validateFormFields() {
+        const requiredFields = document.querySelectorAll('.required');
+        let isValid = true;
+
+        // Check each required field
+        requiredFields.forEach(function(field) {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('error'); // Add error class for styling
+                showFlashMessage("Please fill out all required fields.");
             } else {
-                alert("Geolocation is not supported by this browser.");
+                field.classList.remove('error'); // Remove error class if field is filled
+            }
+        });
+
+        return isValid;
+    }
+
+    // Function to validate location
+    function isLocationSet() {
+        const latitude = document.getElementById('latitude').value.trim();
+        const longitude = document.getElementById('longitude').value.trim();
+        return latitude !== '' && longitude !== '';
+    }
+
+    // Handle Free Upload button click
+    if (freeUploadButton) {
+        freeUploadButton.addEventListener('click', function(e) {
+            if (!validateFormFields()) {
+                e.preventDefault();
+                return;
+            }
+
+            if (!isLocationSet()) {
+                e.preventDefault();
+                showFlashMessage("Please set your shop location before uploading.");
+                return;
+            }
+
+            // Set status to Free and payment status to Free
+            document.getElementById('status').value = "Free";
+            document.getElementById('payment_status').value = "Free";
+            form.submit();
+        });
+    }
+
+    // Handle Paystack Payment button click
+    if (payButton) {
+        payButton.addEventListener('click', function(e) {
+            if (!validateFormFields()) {
+                e.preventDefault();
+                return;
+            }
+
+            if (!isLocationSet()) {
+                e.preventDefault();
+                showFlashMessage("Please set your shop location before proceeding with payment.");
+                return;
+            }
+
+            const confirmation = confirm("Are you sure you want to upload this part with payment?");
+            if (confirmation) {
+                const handler = PaystackPop.setup({
+                    key: 'pk_test_687e15c55aa4b8225311e136ff9c267baf07ec4b', // Replace with your public key
+                    email: 'derickbill3@gmail.com', // Use seller contact or any other user email
+                    amount: document.getElementById('product_price').value * 100, // Convert amount to kobo (for GHS, use Pesewas)
+                    currency: 'GHS',
+                    callback: function(response) {
+                        // Payment successful
+                        showFlashMessage("Payment successful! Reference: " + response.reference);
+
+                        // Set hidden fields
+                        document.getElementById('status').value = "Premium";
+                        document.getElementById('payment_status').value = "Paid";
+                        document.getElementById('payment_reference').value = response.reference;
+
+                        // Submit the form
+                        form.submit();
+                    },
+                    onClose: function() {
+                        showFlashMessage("Payment process cancelled.");
+                    }
+                });
+                handler.openIframe();
             }
         });
     }
 
-    // Handle Free Upload
-var freeUploadButton = document.getElementById('freeUploadButton');
-    if (freeUploadButton) {
-        freeUploadButton.addEventListener('click', function() {
-            // Set status to Free and payment status to Free
-            document.getElementById('status').value = "Free";
-            document.getElementById('payment_status').value = "Free";
+// Handle Set Location button
+const getLocationButton = document.getElementById('getLocationButton');
+if (getLocationButton) {
+    getLocationButton.addEventListener('click', function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // Set latitude and longitude
+                document.getElementById('latitude').value = position.coords.latitude;
+                document.getElementById('longitude').value = position.coords.longitude;
 
-            // Submit the form for free upload
-            document.getElementById('uploadForm').submit();
-        });
-    }
-
-    // Handle Paystack Payment
-// Handle Paystack Payment
-var payButton = document.getElementById('payButton');
-if (payButton) {
-    payButton.addEventListener('click', function() {
-        var confirmation = confirm("Are you sure you want to upload this part with payment?");
-        if (confirmation) {
-            var handler = PaystackPop.setup({
-                key: 'pk_test_687e15c55aa4b8225311e136ff9c267baf07ec4b', // Replace with your public key
-                email: 'derickbill3@gmail.com', // Use seller contact or any other user email
-                amount: document.getElementById('product_price').value * 100, // Convert amount to kobo (for GHS, use Pesewas)
-                currency: 'GHS',
-                callback: function(response) {
-                    // Payment was successful
-                    alert("Payment successful! Reference: " + response.reference);
-
-                    // Set the hidden fields
-                    document.getElementById('status').value = "Premium";
-                    document.getElementById('payment_status').value = "Paid";
-                    document.getElementById('payment_reference').value = response.reference;
-
-                    // Submit the form
-                    document.getElementById('uploadForm').submit();
-                },
-                onClose: function() {
-                    alert("Payment process cancelled.");
-                }
+                // Confirm location set
+                showFlashMessage("Location set! You can now proceed with the upload.");
+            }, function() {
+                showFlashMessage("Unable to retrieve location. Please try again.");
             });
-            handler.openIframe();
+        } else {
+            showFlashMessage("Geolocation is not supported by your browser.");
         }
     });
 }
 
 });
-
-
 </script>
+
+
+
 <script>
 function toggleMenu() {
     const nav = document.querySelector('nav');

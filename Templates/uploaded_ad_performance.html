@@ -6,97 +6,156 @@
     <title>Ad Performance</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Basic reset and styles */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        /* Navigation Bar */
         nav {
             background-color: #333;
             padding: 15px;
             display: flex;
-            justify-content: center;
+            justify-content: space-around;
+            align-items: center;
         }
+
         nav a {
             color: white;
-            margin: 0 15px;
             text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 4px;
         }
+
         nav a:hover {
             background-color: #555;
         }
+
+        /* Container for content */
         .container {
             padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .card {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 20px;
+
+        /* Title */
+        h1 {
             text-align: center;
+            margin-bottom: 20px;
         }
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 5px 0;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-        .performance-stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-        }
-        .performance-stats div {
-            width: 25%;
-            text-align: center;
-        }
+
+        /* Filters for Date Range and Event Type */
         .filters {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+
         .filters label {
-            margin-right: 5px;
+            font-size: 14px;
+            font-weight: bold;
         }
-        .filters input, .filters select, .filters button {
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+
+        .filters input, .filters select {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
+
         .filters button {
-            background-color: #4e73df;
+            background-color: #28a745;
             color: white;
+            padding: 10px 20px;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
         .filters button:hover {
-            background-color: #375a7f;
+            background-color: #218838;
         }
-        .reviews-section {
+
+        /* Stats Display */
+        .performance-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px; /* Added gap for spacing between the cards */
             margin-top: 30px;
+            flex-wrap: wrap; /* Ensures wrapping on smaller screens */
         }
-        .review-card {
-            border: 1px solid #ccc;
-            border-radius: 5px;
+
+        .performance-stats div {
+            flex: 1 1 30%; /* Ensures each card takes up 30% of the space, but shrinks or grows as needed */
+            text-align: center;
+            background-color: #fff;
             padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Performance Graph */
+        canvas {
+            width: 100%;
+            height: 400px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 40px;
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            margin-top: 40px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-card {
             margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
         }
+
         .review-card h5 {
-            margin: 0;
             font-size: 18px;
+            color: #333;
         }
+
         .review-card p {
             margin: 5px 0;
+            color: #555;
         }
+
         .review-card .rating {
             font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -107,7 +166,6 @@
         <a href="/">Home</a>
         <a href="/shopping">Shopping</a>
         <a href="/contact">Contact</a>
-      
     </nav>
 
     <!-- Main Content -->
@@ -153,10 +211,10 @@
                 <p>{{ stats['Phone Reveal'] }}</p>
             </div>
         </div>
-
+<br>
         <!-- Line Chart -->
         <h3>Performance Over Time</h3>
-        <canvas id="performanceChart" width="400" height="200"></canvas>
+        <canvas id="performanceChart"></canvas>
 
         <!-- Reviews Section -->
         <div class="reviews-section">

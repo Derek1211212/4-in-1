@@ -591,28 +591,60 @@ def delete_vehicle(vehicle_id):
     flash('Vehicle deleted successfully!', 'success')
     return redirect(url_for('view_vehicles'))
 
+
+
+
 @app.route('/add_maintenance_log', methods=['GET', 'POST'])
 @login_required
 def add_maintenance_log():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Retrieve the logged-in user's user_id from the session
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("User not logged in.", "error")
+        return redirect(url_for('login'))
+
+    # Fetch the mechanic_id for the logged-in user from the mechanic table
+    cursor.execute("SELECT mechanic_id FROM mechanic WHERE user_id = %s", (user_id,))
+    mechanic = cursor.fetchone()
+    if not mechanic:
+        flash("Mechanic ID not found for the logged-in user.", "error")
+        return redirect(url_for('dashboard'))
+
+    mechanic_id = mechanic[0]
+
+    # Fetch employee_id from company_employees based on the user_id (not mechanic_id)
+    cursor.execute("SELECT employee_id FROM company_employees WHERE user_id = %s", (user_id,))
+    employee = cursor.fetchone()
+    if not employee:
+        flash("Employee ID not found for the logged-in user.", "error")
+        return redirect(url_for('dashboard'))
+
+    employee_id = employee[0]  # Extract employee_id
+
     if request.method == 'POST':
         # Get form data
-        vin = request.form['vin'].strip().upper()  # Capture VIN from the form
+        vin = request.form['vin'].strip().upper()
         work_description = request.form['work_description']
         parts_used = request.form['parts_used']
         cost_of_parts = request.form['cost_of_parts']
         labor_cost = request.form['labor_cost']
         total_cost = request.form['total_cost']
         log_date = request.form['log_date']
-        next_scheduled_service = request.form['next_scheduled_service']
-        service_type = request.form['service_type']
+
+        # Check if 'next_scheduled_service' field is provided, else set it to None (NULL in DB)
+        next_scheduled_service = request.form.get('next_scheduled_service') or None
+
+        # Handle service_type (may contain multiple values)
+        service_type = request.form.getlist('service_type')
+
+        # Get other fields
         warranty_information = request.form['warranty_information']
-        mechanic_ids = request.form.getlist('mechanic_ids')  # List of selected mechanic IDs
 
         # Get the vehicle ID using VIN
-        cursor.execute("SELECT vehicle_id FROM Vehicle WHERE vin = %s", (vin,))
+        cursor.execute("SELECT vehicle_id FROM vehicle WHERE vin = %s", (vin,))
         vehicle = cursor.fetchone()
         if vehicle is None:
             flash('Invalid VIN. No vehicle found.', 'error')
@@ -624,57 +656,79 @@ def add_maintenance_log():
         cursor.execute("""
             INSERT INTO maintenance_logs (
                 vehicle_id, vin, work_description, parts_used, cost_of_parts, labor_cost, 
-                total_cost, log_date, next_scheduled_service, service_type, warranty_information
+                total_cost, log_date, next_scheduled_service, service_type, warranty_information, mechanic_id, user_id, employee_id
             )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
         """, (vehicle_id, vin, work_description, parts_used, cost_of_parts, labor_cost,
-              total_cost, log_date, next_scheduled_service, service_type, warranty_information))
-        log_id = cursor.lastrowid  # Get the ID of the newly inserted log
-
-        # Insert into the join table for each selected mechanic
-        for mechanic_id in mechanic_ids:
-            cursor.execute("INSERT INTO maintenance_log_mechanics (log_id, mechanic_id) VALUES (%s, %s)", (log_id, mechanic_id))
+              total_cost, log_date, next_scheduled_service, ','.join(service_type),
+              warranty_information, mechanic_id, user_id, employee_id))
 
         conn.commit()
         flash('Maintenance log added successfully!', 'success')
         return redirect(url_for('view_maintenance_logs'))
 
     # Query mechanics to display in the dropdown
-    cursor.execute("SELECT employee_id AS user_id, employee_name AS name FROM company_employees WHERE role = 'mechanic'")
+    cursor.execute("SELECT employee_id, employee_name FROM company_employees WHERE role = 'mechanic'")
     mechanics = cursor.fetchall()
 
-    # Query service types to display in the dropdown
-    cursor.execute("SELECT service_id, name FROM services")
+    conn.close()
+    return render_template('add_maintenance_log.html', mechanics=mechanics)
+
+
+
+
+
+@app.route('/search_services', methods=['GET'])
+def search_services():
+    query = request.args.get('q', '')  # Get the search query ('q')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Search for services matching the query
+    cursor.execute("SELECT service_id, name FROM services WHERE name LIKE %s LIMIT 10", ('%' + query + '%',))
     services = cursor.fetchall()
 
     conn.close()
-    return render_template('add_maintenance_log.html', mechanics=mechanics, services=services)
+
+    # Return JSON response with service data
+    return jsonify(services=[{'service_id': service[0], 'name': service[1]} for service in services])
 
 
 
 
- 
+
+
+
 @app.route('/view_maintenance_logs', methods=['GET', 'POST'])
 @login_required
 def view_maintenance_logs():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    # Retrieve the logged-in user's user_id from the session
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("User not logged in.", "error")
+        return redirect(url_for('login'))
+
     # Handle filtering by log date if a date is provided
-    log_date_filter = request.form.get('log_date_filter')
+    log_date_filter = request.args.get('log_date_filter')  # Use GET parameter for date filter
     if log_date_filter:
         cursor.execute(""" 
-            SELECT ml.*, e.name AS mechanic_name
+            SELECT ml.*, e.employee_name AS mechanic_name, s.name AS service_name
             FROM maintenance_logs ml
-            JOIN employees e ON ml.employee_id = e.employee_id
-            WHERE ml.log_date = %s
-        """, (log_date_filter,))
+            JOIN company_employees e ON ml.employee_id = e.employee_id
+            JOIN services s ON ml.service_type = s.service_id  -- Matching service_type with service_id
+            WHERE ml.user_id = %s AND ml.log_date = %s
+        """, (user_id, log_date_filter))
     else:
         cursor.execute(""" 
-            SELECT ml.*, e.name AS mechanic_name
+            SELECT ml.*, e.employee_name AS mechanic_name, s.name AS service_name
             FROM maintenance_logs ml
-            JOIN employees e ON ml.employee_id = e.employee_id
-        """)
+            JOIN company_employees e ON ml.employee_id = e.employee_id
+            JOIN services s ON ml.service_type = s.service_id  -- Matching service_type with service_id
+            WHERE ml.user_id = %s
+        """, (user_id,))
 
     logs = cursor.fetchall()
 
@@ -682,6 +736,9 @@ def view_maintenance_logs():
     conn.close()
 
     return render_template('view_maintenance_logs.html', logs=logs)
+
+
+
 
 
 
@@ -2219,6 +2276,8 @@ def change_ad(ad_id):
 
 
 
+
+
 @app.route('/upload-part', methods=['GET', 'POST'])
 @login_required
 def upload_part():
@@ -2247,14 +2306,14 @@ def upload_part():
                 latitude = request.form.get('latitude')
                 longitude = request.form.get('longitude')
 
-                # Handle images
-                image_paths = []
-                for image in images[:4]:
-                    if image:
+                # Handle images (default empty values if not enough images uploaded)
+                image_paths = [''] * 4
+                for i, image in enumerate(images[:4]):
+                    if image and image.filename:
                         filename = secure_filename(image.filename)
                         image_path = os.path.join('static/images', filename)
                         image.save(image_path)
-                        image_paths.append(filename)
+                        image_paths[i] = filename
 
                 payment_status = "Free"
                 status = "Free"
@@ -2262,7 +2321,6 @@ def upload_part():
 
                 # Check if the form is for a paid ad
                 if 'payment_status' in request.form and request.form['payment_status'] == 'Paid':
-                    # Start payment verification process
                     payment_reference = request.form.get('payment_reference')
                     secret_key = 'sk_test_9841b94baa622b81bc86987313d32a4eed88a9bf'
                     verification_url = f'https://api.paystack.co/transaction/verify/{payment_reference}'
@@ -2275,34 +2333,50 @@ def upload_part():
                         payment_status = "Paid"
                         status = "Premium"
                     else:
-                        return render_template('upload_part.html', total_ads=total_ads, total_revenue=total_revenue, error_message="Payment verification failed.")
+                        flash("Payment verification failed.", 'error')
+                        return redirect(url_for('upload_part'))
 
                 # Insert the ad with payment_reference
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO shopping (
                         shop_name, part_category, part_name, part_description, 
                         seller_contact, price, status, payment_status, user_id, 
                         image1, image2, image3, image4, brand, `condition`, 
                         latitude, longitude, payment_reference
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """, (
-                    shop_name, part_category, part_name, part_description, seller_contact,
-                    product_price, status, payment_status, user_id, *image_paths, brand,
-                    condition, latitude, longitude, payment_reference
-                ))
+                    """,
+                    (
+                        shop_name, part_category, part_name, part_description, seller_contact,
+                        product_price, status, payment_status, user_id, *image_paths, brand,
+                        condition, latitude, longitude, payment_reference
+                    )
+                )
 
                 conn.commit()
-                return render_template('upload_part.html', total_ads=total_ads, total_revenue=total_revenue, success_message="Ad uploaded successfully.")
 
-            return render_template('upload_part.html', total_ads=total_ads, total_revenue=total_revenue)
+                # Flash success message
+                flash("Ad uploaded successfully.", 'success')
+
+                # Redirect to avoid form re-submission
+                return redirect(url_for('upload_part'))
+
+            # Check for optional query parameters for user feedback (removed for flash messages)
+            return render_template('upload_part.html', 
+                                   total_ads=total_ads, 
+                                   total_revenue=total_revenue)
 
         except Exception as e:
             app.logger.error(f"Error: {e}")
-            return render_template('upload_part.html', error_message="An error occurred.")
+            flash("An error occurred.", 'error')
+            return redirect(url_for('upload_part'))
+
         finally:
             cursor.close()
     else:
-        return render_template('uploaded_ads.html', error_message="Database connection failed.")
+        flash("Database connection failed.", 'error')
+        return redirect(url_for('upload_part'))
+
 
 
 
@@ -3357,6 +3431,93 @@ def my_ads():
 
 
 
+
+@app.route('/upgrade_ad/<int:ad_id>', methods=['POST'])
+def upgrade_ad(ad_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Check if the ad is already premium
+        cursor.execute("SELECT is_premium FROM towing_ads WHERE ad_id = %s", (ad_id,))
+        ad = cursor.fetchone()
+
+        if not ad:
+            return jsonify({"message": "Ad not found."}), 404
+
+        if ad[0]:  # If already premium
+            return jsonify({"message": "Ad is already a premium ad."}), 400
+
+        # Fetch user email from session
+        email = session.get('user_email', 'Derickbill3@gmail.com')  # Replace with session-stored email
+        amount_in_pesewas = 10000  # 100 GHS in pesewas
+
+        # Paystack API setup
+        paystack_url = "https://api.paystack.co/transaction/initialize"
+        headers = {
+            "Authorization": f"Bearer sk_test_9841b94baa622b81bc86987313d32a4eed88a9bf",  # Replace YOUR_SECRET_KEY with Paystack secret key
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "email": email,
+            "amount": amount_in_pesewas,
+            "callback_url": f"{request.host_url}verify_payment/{ad_id}"  # Redirect to a verification route after payment
+        }
+
+        # Initialize transaction
+        response = requests.post(paystack_url, headers=headers, json=payload)
+        response_data = response.json()
+
+        if response.status_code == 200 and response_data['status']:
+            payment_url = response_data['data']['authorization_url']
+            return jsonify({"payment_url": payment_url}), 200
+        else:
+            return jsonify({"message": "Payment initialization failed.", "error": response_data.get('message')}), 400
+
+    except Exception as e:
+        return jsonify({"message": f"Error processing upgrade: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
+@app.route('/verify_payment/<int:ad_id>', methods=['GET'])
+def verify_payment(ad_id):
+    try:
+        # Get transaction reference from Paystack's callback
+        reference = request.args.get('reference')
+        if not reference:
+            return jsonify({"message": "Payment reference not found."}), 400
+
+        # Verify transaction with Paystack
+        paystack_url = f"https://api.paystack.co/transaction/verify/{reference}"
+        headers = {"Authorization": f"Bearer sk_test_9841b94baa622b81bc86987313d32a4eed88a9bf"}  # Replace with your Paystack secret key
+
+        response = requests.get(paystack_url, headers=headers)
+        response_data = response.json()
+
+        if response.status_code == 200 and response_data['status'] and response_data['data']['status'] == "success":
+            # Mark the ad as premium
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            query = "UPDATE towing_ads SET is_premium = 1 WHERE ad_id = %s"
+            cursor.execute(query, (ad_id,))
+            connection.commit()
+
+            return redirect('/my_ads')  # Redirect to the user's ads page
+        else:
+            return jsonify({"message": "Payment verification failed.", "error": response_data.get('message')}), 400
+
+    except Exception as e:
+        return jsonify({"message": f"Error verifying payment: {str(e)}"}), 500
+
+
+
+
+
+
+
 @app.route('/delete_towing_ad/<int:ad_id>', methods=['POST'])
 def delete_towing_ad(ad_id):
     try:
@@ -3854,11 +4015,11 @@ def mechanic_shops():
 
         if user_location:  # If a location is provided
             user_coords = get_coordinates(user_location)
-            if not user_coords:  # Invalid location entered
+            if not user_coords or len(user_coords) != 2:  # Invalid location entered
                 flash("Invalid location, please enter a valid city in Ghana.", "danger")
                 return render_template('mechanic_list.html', mechanics=[])  # Empty list to indicate no results
 
-            # Fetch mechanics data, joining the mechanic and services tables
+            # Fetch mechanics data
             cursor.execute("""
                 SELECT 
                     m.mechanic_id, 
@@ -3879,19 +4040,22 @@ def mechanic_shops():
             # Calculate distances and sort by proximity
             mechanic_list = []
             for mech in mechanics:
+                if mech["latitude"] is None or mech["longitude"] is None:
+                    print(f"Invalid latitude/longitude for mechanic_id: {mech['mechanic_id']}")
+                    continue
+
                 shop_coords = (mech["latitude"], mech["longitude"])  # Latitude and Longitude
                 distance = geodesic(user_coords, shop_coords).kilometers
                 mechanic_list.append({
                     **mech,  # Include all mechanic data
                     'distance': round(distance, 2)  # Add rounded distance
                 })
-            mechanic_list.sort(key=lambda x: x['distance'])  # Sort by proximity
 
-            print(mechanic_list)  # Debugging: check if latitude and longitude are present
+            mechanic_list.sort(key=lambda x: x['distance'])  # Sort by proximity
 
             return render_template('mechanic_list.html', mechanics=mechanic_list)
 
-    # Default behavior: fetch and display all ads when no location is entered or the page is first loaded
+    # Default behavior: fetch and display all mechanics when no location is entered or the page is first loaded
     cursor.execute("""
         SELECT 
             m.mechanic_id, 
@@ -3899,38 +4063,13 @@ def mechanic_shops():
             m.working_hours, 
             m.service_locations, 
             m.company_image, 
-            m.latitude,  -- Include latitude
-            m.longitude, -- Include longitude
+            m.latitude, 
+            m.longitude, 
             m.contact, 
             GROUP_CONCAT(s.description SEPARATOR ', ') AS service_descriptions 
         FROM mechanic m
         LEFT JOIN services s ON m.mechanic_id = s.mechanic_id
         GROUP BY m.mechanic_id
-    """)
-    mechanics = cursor.fetchall()
-
-    print(mechanics)  # Debugging: check if latitude and longitude are present
-
-    return render_template('mechanic_list.html', mechanics=mechanics)
-
-
-    # Default behavior: fetch and display all ads when no location is entered or the page is first loaded
-    cursor.execute("""
-        SELECT 
-            m.mechanic_id, 
-            m.name, 
-            m.working_hours, 
-            m.service_locations, 
-            m.company_image, 
-            m.latitude,  -- Include latitude
-            m.longitude, -- Include longitude
-            m.contact, 
-            GROUP_CONCAT(s.description SEPARATOR ', ') AS service_descriptions 
-        FROM mechanic m
-        LEFT JOIN services s ON m.mechanic_id = s.mechanic_id
-        GROUP BY m.mechanic_id
-
-
     """)
     mechanics = cursor.fetchall()
 
