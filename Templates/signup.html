@@ -19,13 +19,14 @@
 
         .container {
             background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
+            border-radius: 10px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             padding: 40px;
             width: 100%;
-            max-width: 450px;
-            position: relative;
+            max-width: 600px;
             animation: slideIn 0.5s ease-out;
+            overflow-y: auto;
+            height: 100vh;
         }
 
         @keyframes slideIn {
@@ -49,8 +50,9 @@
         }
 
         form {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
 
         label {
@@ -63,10 +65,10 @@
         input[type="email"],
         input[type="password"],
         select,
-        textarea {
+        textarea,
+        input[type="file"] {
             width: 100%;
             padding: 12px;
-            margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 6px;
             font-size: 16px;
@@ -81,7 +83,7 @@
         }
 
         button {
-            width: 100%;
+            grid-column: span 2;
             padding: 12px;
             background-color: #000;
             color: #fff;
@@ -97,40 +99,8 @@
             transform: translateY(-2px);
         }
 
-        .link-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .flash-message {
-            text-align: center;
-            padding: 12px;
-            margin: 15px 0;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .danger {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
         #mechanic-fields {
+            grid-column: span 2;
             display: none;
             margin-top: 20px;
             background-color: #f0f0f0;
@@ -138,33 +108,47 @@
             border-radius: 6px;
         }
 
-        #mechanic-fields label {
-            color: #000;
+        .link-container {
+            text-align: center;
+            margin-top: 20px;
+            grid-column: span 2;
         }
 
+        .alert {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .alert.success { background-color: #4caf50; }
+        .alert.danger { background-color: #f44336; }
+
         @media (max-width: 768px) {
-            .container {
-                padding: 25px;
-            }
-            h2 {
-                font-size: 1.8rem;
+            form {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <h2>Sign Up</h2>
+
+        <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        <div id="messages">
+            {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% endwith %}
 
-        <h2>Sign Up</h2>
         <form action="{{ url_for('signup') }}" method="POST" enctype="multipart/form-data">
-            <label for="name">Company Name:</label>
+            <label for="name">User Name:</label>
             <input type="text" name="name" id="name" required>
 
             <label for="email">Email:</label>
@@ -189,6 +173,12 @@
             <input type="text" name="secret_answer" id="secret_answer" required>
 
             <div id="mechanic-fields">
+                <label for="company_name">Company Name:</label>
+                <input type="text" name="company_name" id="company_name" placeholder="Enter your company name">
+
+                <label for="contact">Contact:</label>
+                <input type="text" name="contact" id="contact" required>
+
                 <label for="working_hours">Working Hours:</label>
                 <input type="text" name="working_hours" id="working_hours" placeholder="e.g., Mon-Fri 8am-5pm">
 
@@ -203,7 +193,6 @@
 
                 <label for="longitude">Longitude:</label>
                 <input type="text" name="longitude" id="longitude" readonly>
-
                 <button type="button" onclick="getLocation()">Get Current Location</button>
 
                 <label for="image1">Upload Company Image 1:</label>
@@ -239,6 +228,21 @@
                 alert("Geolocation is not supported by this browser.");
             }
         }
+
+        document.querySelectorAll('input[type="file"]').forEach((input) => {
+            input.addEventListener('change', function () {
+                if (this.files[0].size > 2 * 1024 * 1024) {
+                    alert('File size must not exceed 2MB.');
+                    this.value = ''; // Clear the input
+                }
+            });
+        });
+
+        document.querySelector('form').addEventListener('submit', function () {
+            const button = document.querySelector('button[type="submit"]');
+            button.innerHTML = 'Signing Up...';
+            button.disabled = true;
+        });
     </script>
 </body>
 </html>

@@ -218,7 +218,7 @@ def mechanic_dashboard():
             cursor = connection.cursor(dictionary=True)
             try:
                 # Fetch mechanic's name using user_id from session
-                cursor.execute("""SELECT name FROM mechanic WHERE user_id = %s""", (user_id,))
+                cursor.execute("""SELECT company_name FROM mechanic WHERE user_id = %s""", (user_id,))
                 mechanic = cursor.fetchone()
                 
                 # Fetch the count of pending appointments
@@ -227,11 +227,11 @@ def mechanic_dashboard():
                 app.logger.debug(f"Fetched Mechanic Data: {mechanic}")  # Debugging statement
 
                 if mechanic:
-                    mechanic_name = mechanic['name']
+                    mechanic_name = mechanic['company_name']
                     app.logger.debug(f"Fetched Mechanic Name: {mechanic_name}")  # Debugging statement
 
                     # Render the mechanic dashboard with mechanic name and pending appointment count
-                    return render_template('mechanic_dashboard.html', mechanic_name=mechanic_name, pending_appointments=pending_appointments)
+                    return render_template('mechanic_dashboard.html', company_name=mechanic_name, pending_appointments=pending_appointments)
                 else:
                     app.logger.debug("No mechanic found with the given user_id.")  # Debugging statement
                     flash('Mechanic not found!', 'danger')
@@ -250,6 +250,7 @@ def mechanic_dashboard():
     else:
         flash('Please log in first!', 'danger')
         return redirect(url_for('login'))
+
 
 
 
@@ -3749,7 +3750,7 @@ def get_reviews():
 # Route to get ads by location
 # Route to get ads by location (or all ads if no location provided)
 @app.route('/api/get_ads_by_location')
-@login_required
+
 def get_ads_by_location():
     location = request.args.get('location')
 
@@ -3832,17 +3833,20 @@ def calculate_distance(lat1, lon1, lat2, lon2):
 
 
 
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         # General User Data
-        name = request.form['name']
-        email = request.form['email']
-        password = request.form['password']
-        role = request.form['role']
-        secret_question = request.form['secret_question']
-        secret_answer = request.form['secret_answer']
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip()
+        role = request.form.get('role', '').strip()
+        secret_question = request.form.get('secret_question', '').strip()
+        secret_answer = request.form.get('secret_answer', '').strip()
+
+        if not all([name, email, password, role, secret_question, secret_answer]):
+            flash("All fields are required. Please fill in all details.", "danger")
+            return redirect(url_for('signup'))
 
         if role == "Select":
             flash("Please select a valid role.", "danger")
@@ -3864,13 +3868,16 @@ def signup():
             cursor.execute("SELECT LAST_INSERT_ID() AS user_id")
             user_id = cursor.fetchone()['user_id']
 
-            flash(f"Sign-up successful! Your User ID is: {user_id}. Please save this ID for future logins.", 'success')
+            # Display success message
+            flash(f"Sign-up successful! Your User ID is: {user_id}. Please save this ID for future reference.", 'success')
 
             # If the role is 'mechanic', insert additional details into 'mechanic' table
-            if role == 'mechanic':
-                working_hours = request.form.get('working_hours', '')
-                service_locations = request.form.get('service_locations', '')
-                skills_certifications = request.form.get('skills_certifications', '')
+            if role.lower() == 'mechanic':
+                contact = request.form.get('contact', '').strip()
+                company_name = request.form.get('company_name', '').strip()
+                working_hours = request.form.get('working_hours', '').strip()
+                service_locations = request.form.get('service_locations', '').strip()
+                skills_certifications = request.form.get('skills_certifications', '').strip()
                 latitude = request.form.get('latitude', None)
                 longitude = request.form.get('longitude', None)
 
@@ -3891,12 +3898,12 @@ def signup():
                 # Insert mechanic details into 'mechanic' table
                 cursor.execute("""
                     INSERT INTO mechanic (
-                        user_id, name, working_hours, service_locations, skills_certifications, 
-                        latitude, longitude, company_image
+                        user_id, company_name, working_hours, service_locations, skills_certifications, 
+                        latitude, longitude, company_image, contact
                     )
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                """, (user_id, name, working_hours, service_locations, skills_certifications,
-                      latitude, longitude, company_image))
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (user_id, company_name, working_hours, service_locations, skills_certifications,
+                      latitude, longitude, company_image, contact))
                 connection.commit()
                 flash("Mechanic details saved successfully!", 'success')
 
@@ -3910,6 +3917,7 @@ def signup():
             connection.close()
 
     return render_template('signup.html')
+
 
 
 
