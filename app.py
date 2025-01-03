@@ -4031,7 +4031,7 @@ def mechanic_shops():
             cursor.execute("""
                 SELECT 
                     m.mechanic_id, 
-                    m.name, 
+                    m.company_name, 
                     m.working_hours, 
                     m.service_locations, 
                     m.company_image, 
@@ -4067,7 +4067,7 @@ def mechanic_shops():
     cursor.execute("""
         SELECT 
             m.mechanic_id, 
-            m.name, 
+            m.company_name, 
             m.working_hours, 
             m.service_locations, 
             m.company_image, 

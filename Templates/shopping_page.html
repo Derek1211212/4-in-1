@@ -12,9 +12,10 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            background-color: #f4f4f4;
+            background-color: #f9fafb;
+            color: #333;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -22,10 +23,11 @@
 
         /* Navigation bar styles */
         nav {
-            background-color: #333;
+            background-color: #1a202c;
             color: #fff;
             padding: 15px;
             text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         nav a {
@@ -41,59 +43,82 @@
 
         /* Footer styling */
         footer {
-            background-color: #333;
+            background-color: #1a202c;
             color: #fff;
             text-align: center;
             padding: 10px;
-            margin-top: auto; /* Pushes the footer to the bottom */
+            margin-top: auto;
+            font-size: 14px;
         }
 
         /* Container that holds the form and the ads */
         .container {
             padding: 20px;
-            flex: 1; /* Allows the container to expand and push the footer to the bottom */
+            flex: 1;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #2d3748;
         }
 
         /* Form container styles */
         .form-container {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         label {
             margin-right: 10px;
             font-weight: bold;
+            color: #4a5568;
         }
 
         input[type="text"], select {
             padding: 10px;
             margin-right: 10px;
             border-radius: 4px;
-            border: 1px solid #ccc;
-            width: 250px; /* Slightly wider for better UX */
-            max-width: 100%; /* Ensure it doesn't overflow */
+            border: 1px solid #cbd5e0;
+            width: 250px;
+            max-width: 100%;
+            font-size: 14px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 3px rgba(49, 130, 206, 0.5);
         }
 
         button {
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 12px 20px;
+            border-radius: 6px;
             border: none;
-            background-color: #333;
+            background-color: #2b6cb0;
             color: #fff;
             cursor: pointer;
             font-size: 16px;
             margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
             width: 250px;
         }
 
         button:hover {
-            background-color: #555;
+            background-color: #2c5282;
+            transform: scale(1.05);
         }
 
         /* Grid container for ads */
         .ads-list {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Ensures two columns on all screen sizes */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             padding: 20px;
             max-width: 1200px;
@@ -103,102 +128,135 @@
         /* Card for individual ad */
         .card {
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             text-align: center;
-            padding: 20px;
-            position: relative; /* Needed for positioning status */
-            transition: transform 0.3s ease;
-            height: 290px; /* Reduced height of the card */
+            padding: 15px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-10px); /* Card hover effect */
+            transform: translateY(-10px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         .card img {
             width: 100%;
-            height: 160px; /* Fixed height for images */
-            object-fit: scale-down; /* Ensures images don't stretch */
-            border-radius: 5px;
+            height: 160px;
+            object-fit: scale-down;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
         .card h3 {
-            margin: 0px 0;
+            margin: 10px 0;
             font-size: 1.2rem;
-            color: #333;
+            color: #2d3748;
         }
 
         .card p {
             font-size: 1rem;
-            color: #555;
+            color: #4a5568;
         }
 
         .status {
             font-weight: bold;
-            color: green;
+            color: #38a169;
             position: absolute;
             top: 10px;
             right: 10px;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(56, 161, 105, 0.1);
             padding: 5px 10px;
             border-radius: 5px;
+            font-size: 14px;
         }
 
-        /* Responsive styling for smaller screens */
+        /* Responsive styling */
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
             }
 
             .ads-list {
-                grid-template-columns: repeat(2, 1fr); /* Ensures two columns even on smaller screens */
+                grid-template-columns: repeat(2, 1fr);
                 padding: 15px;
             }
 
             input[type="text"], select {
-                width: 100%; /* Full width for smaller screens */
+                width: 100%;
             }
 
             button {
-                width: 100%; /* Full width for button */
+                width: 100%;
             }
         }
+/* Floating action icon styles */
+.floating-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #2b6cb0;
+    color: #fff;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    animation: bounce 2s infinite;
+    z-index: 1000;
+}
+
+.floating-icon:hover {
+    background-color: #2c5282;
+    transform: scale(1.1);
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.floating-icon i {
+    pointer-events: none; /* Ensures the icon itself doesn't interfere with click events */
+}
+
     </style>
 </head>
 <body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/signup">Create Ad(s)</a>
+    </nav>
+
     <div class="container">
         <h1>Available Spare Parts</h1>
         
         <div class="form-container">
             <form method="POST" action="/shopping">
-                <label for="location">Enter a Location (e.g., Madina, Accra):</label>
+                <label for="location">Enter Location:</label>
                 <input type="text" id="location" name="location" placeholder="Search by city" value="{{ location }}">
 
-                <label for="part_category">Select Part Category:</label>
+                <label for="part_category">Select Category:</label>
                 <select id="part_category" name="part_category">
                     <option value="">Select Category</option>
-                    <option value="Engine and Related Parts" {% if part_category == 'Engine and Related Parts' %}selected{% endif %}>Engine and Related Parts</option>
-                    <option value="Fuel System" {% if part_category == 'Fuel System' %}selected{% endif %}>Fuel System</option>
-                    <option value="Exhaust System" {% if part_category == 'Exhaust System' %}selected{% endif %}>Exhaust System</option>
-                    <option value="Cooling System" {% if part_category == 'Cooling System' %}selected{% endif %}>Cooling System</option>
-                    <option value="Electrical System" {% if part_category == 'Electrical System' %}selected{% endif %}>Electrical System</option>
-                    <option value="Transmission and Drivetrain" {% if part_category == 'Transmission and Drivetrain' %}selected{% endif %}>Transmission and Drivetrain</option>
-                    <option value="Braking System" {% if part_category == 'Braking System' %}selected{% endif %}>Braking System</option>
-                    <option value="Suspension System" {% if part_category == 'Suspension System' %}selected{% endif %}>Suspension System</option>
-                    <option value="Steering System" {% if part_category == 'Steering System' %}selected{% endif %}>Steering System</option>
-                    <option value="Interior Components" {% if part_category == 'Interior Components' %}selected{% endif %}>Interior Components</option>
-                    <option value="Exterior Body Parts" {% if part_category == 'Exterior Body Parts' %}selected{% endif %}>Exterior Body Parts</option>
-                    <option value="Lighting" {% if part_category == 'Lighting' %}selected{% endif %}>Lighting</option>
-                    <option value="Climate Control" {% if part_category == 'Climate Control' %}selected{% endif %}>Climate Control</option>
-                    <option value="Wheels and Tires" {% if part_category == 'Wheels and Tires' %}selected{% endif %}>Wheels and Tires</option>
-                    <option value="Safety and Security Systems" {% if part_category == 'Safety and Security Systems' %}selected{% endif %}>Safety and Security Systems</option>
-                    <option value="Glass and Wiper System" {% if part_category == 'Glass and Wiper System' %}selected{% endif %}>Glass and Wiper System</option>
-                    <option value="Fuel and Emission Control" {% if part_category == 'Fuel and Emission Control' %}selected{% endif %}>Fuel and Emission Control</option>
-                    <option value="Accessories and Add-ons" {% if part_category == 'Accessories and Add-ons' %}selected{% endif %}>Accessories and Add-ons</option>
-                    <option value="Miscellaneous and Small Parts" {% if part_category == 'Miscellaneous and Small Parts' %}selected{% endif %}>Miscellaneous and Small Parts</option>
-                    <option value="Infotainment and Electronics" {% if part_category == 'Infotainment and Electronics' %}selected{% endif %}>Infotainment and Electronics</option>
+                    <option value="Engine and Related Parts">Engine and Related Parts</option>
+                    <option value="Fuel System">Fuel System</option>
+                    <option value="Exhaust System">Exhaust System</option>
+                    <option value="Cooling System">Cooling System</option>
+                    <option value="Electrical System">Electrical System</option>
+                    <option value="Transmission and Drivetrain">Transmission and Drivetrain</option>
                 </select>
 
                 <label for="part_name">Enter Part Name:</label>
@@ -208,19 +266,19 @@
             </form>
         </div>
 
+            <a href="#"><div class="floating-icon" aria-label="Contact Support">
+            <i class="fas fa-question">Support</i>
+    </div></a>
+
         <div class="ads-list">
             {% if ads %}
                 {% for ad in ads %}
                     <div class="card" data-ad-id="{{ ad.ad_id }}">
-                        <!-- Add a link to the part details page -->
                         <a href="{{ url_for('part_details', ad_id=ad.ad_id) }}">
                             <img src="{{ url_for('static', filename='images/' + ad.image1) }}" alt="Part Image">
                             <h3>{{ ad.part_name }}</h3>
                             <p>Price: ₵{{ ad.price }}</p>
                             <p> <span class="status">{{ ad.status }}</span></p>
-                            {% if ad.distance %}
-                                <p>Distance: {{ ad.distance }} km</p>
-                            {% endif %}
                         </a>
                     </div>
                 {% endfor %}
@@ -233,68 +291,5 @@
     <footer>
         <p>&copy; 2024 YourCompany. All Rights Reserved.</p>
     </footer>
-
-    <script>
-        // Handle ad clicks
-        const adCards = document.querySelectorAll('.card');
-        adCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const adId = card.getAttribute('data-ad-id');
-                console.log(`Ad clicked: ${adId}`);
-                // Add your tracking code here, e.g., sending adId to your backend
-            });
-        });
-    </script>
 </body>
-<script>
-    
- document.addEventListener('DOMContentLoaded', () => {
-            // Set to track already logged impressions
-            const loggedImpressions = new Set();
-
-            // Intersection Observer callback function
-            const handleIntersect = (entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const adId = entry.target.getAttribute('data-ad-id');
-
-                        // Log impression only if not already logged
-                        if (!loggedImpressions.has(adId)) {
-                            loggedImpressions.add(adId); // Mark ad as logged
-
-                            // Send POST request to log impression
-                            fetch(`/log_impression/${adId}`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.status === 'success') {
-                                    console.log(`Impression logged for ad ${adId}`);
-                                } else {
-                                    console.error(`Failed to log impression for ad ${adId}: ${data.message}`);
-                                }
-                            })
-                            .catch(error => console.error(`Error logging impression for ad ${adId}:`, error));
-                        }
-                    }
-                });
-            };
-
-            // Intersection Observer setup
-            const observer = new IntersectionObserver(handleIntersect, {
-                root: null, // Use viewport as the root
-                threshold: 0.1, // Log when 10% of the card is visible
-            });
-
-            // Observe all ads
-            const ads = document.querySelectorAll('.card[data-ad-id]');
-            ads.forEach(ad => observer.observe(ad));
-        });
-
-
-
-</script>
 </html>
