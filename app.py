@@ -477,20 +477,19 @@ def view_vehicles():
     # Retrieve the user_id from the session
     user_id = session.get('user_id')
 
-    # Check if the request is POST (searching)
     if request.method == 'POST':
         vin = request.form.get('vin')
         if vin:
             # Search by VIN (partial match) and filter by user_id
-            query = "SELECT * FROM Vehicle WHERE vin LIKE %s AND customer_id IN (SELECT customer_id FROM customer WHERE user_id = %s)"
+            query = "SELECT * FROM Vehicle WHERE vin LIKE %s AND user_id = %s"
             cursor.execute(query, (f"%{vin}%", user_id))
         else:
             # No search term, show all vehicles for the current user
-            query = "SELECT * FROM Vehicle WHERE customer_id IN (SELECT customer_id FROM customer WHERE user_id = %s)"
+            query = "SELECT * FROM Vehicle WHERE user_id = %s"
             cursor.execute(query, (user_id,))
     else:
         # GET request, show all vehicles for the current user
-        query = "SELECT * FROM Vehicle WHERE customer_id IN (SELECT customer_id FROM customer WHERE user_id = %s)"
+        query = "SELECT * FROM Vehicle WHERE user_id = %s"
         cursor.execute(query, (user_id,))
 
     vehicles = cursor.fetchall()
@@ -504,35 +503,38 @@ def view_vehicles():
 @login_required
 def add_vehicle():
     if request.method == 'POST':
-        customer_id = request.form['customer_id']
         make = request.form['make'].strip().upper()
         model = request.form['model'].strip().upper()
         year = request.form['year']
         license_plate_number = request.form['license_plate_number'].strip().upper()
 
-        # Generate the VIN
+        # Retrieve the user_id from the session
+        user_id = session.get('user_id')
+
+        # Generate the VIN using the user_id instead of customer_id
         if make and model and year and license_plate_number:
             vin = (
-                make[-3:] + model[:2] + str(year)[-2:] + license_plate_number[-2:] + str(customer_id)
+                make[-3:] +
+                model[:2] +
+                str(year)[-2:] +
+                license_plate_number[-2:] +
+                str(user_id)
             ).upper()
 
-            # Retrieve the user_id from the session
-            user_id = session.get('user_id')
-
-            # Insert the vehicle into the database with user_id associated to the customer
+            # Insert the vehicle into the database with user_id associated
             conn = get_db_connection()
             cursor = conn.cursor()
             try:
                 query = """
-                    INSERT INTO Vehicle (customer_id, make, model, year, vin, license_plate_number)
+                    INSERT INTO Vehicle (make, model, year, vin, license_plate_number, user_id)
                     VALUES (%s, %s, %s, %s, %s, %s)
                 """
-                cursor.execute(query, (customer_id, make, model, year, vin, license_plate_number))
+                cursor.execute(query, (make, model, year, vin, license_plate_number, user_id))
                 conn.commit()
                 flash('Vehicle added successfully!', 'success')
             except mysql.connector.IntegrityError:
-                flash('Invalid customer ID.', 'error')
-                return redirect(url_for('add_vehicle'))  # Redirect back to the add vehicle form on error
+                flash('Error adding vehicle. Please try again.', 'error')
+                return redirect(url_for('add_vehicle'))
             finally:
                 cursor.close()
                 conn.close()
@@ -542,28 +544,26 @@ def add_vehicle():
     return render_template('add_vehicle.html')
 
 
-
-
-
-# Route to edit a vehicle
 @app.route('/edit_vehicle/<int:vehicle_id>', methods=['GET', 'POST'])
 @login_required
 def edit_vehicle(vehicle_id):
+    user_id = session.get('user_id')
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     if request.method == 'POST':
-        customer_id = request.form['customer_id']
         make = request.form['make']
         model = request.form['model']
         year = request.form['year']
         vin = request.form['vin']
         license_plate_number = request.form['license_plate_number']
 
+        # Update the vehicle details and ensure the vehicle belongs to the current user
         cursor.execute("""
-            UPDATE Vehicle SET customer_id = %s, make = %s, model = %s, year = %s, vin = %s, 
-                               license_plate_number = %s WHERE vehicle_id = %s
-        """, (customer_id, make, model, year, vin, license_plate_number, vehicle_id))
+            UPDATE Vehicle
+            SET make = %s, model = %s, year = %s, vin = %s, license_plate_number = %s
+            WHERE vehicle_id = %s AND user_id = %s
+        """, (make, model, year, vin, license_plate_number, vehicle_id, user_id))
         conn.commit()
 
         flash('Vehicle updated successfully!', 'success')
@@ -571,20 +571,22 @@ def edit_vehicle(vehicle_id):
         conn.close()
         return redirect(url_for('view_vehicles'))
 
-    # Pre-fill the form with the vehicle's data
-    cursor.execute("SELECT * FROM Vehicle WHERE vehicle_id = %s", (vehicle_id,))
+    # Pre-fill the form with the vehicle's data for the current user only
+    cursor.execute("SELECT * FROM Vehicle WHERE vehicle_id = %s AND user_id = %s", (vehicle_id, user_id))
     vehicle = cursor.fetchone()
     cursor.close()
     conn.close()
     return render_template('edit_vehicle.html', vehicle=vehicle)
 
-# Route to delete a vehicle
+
 @app.route('/delete_vehicle/<int:vehicle_id>', methods=['POST'])
 @login_required
 def delete_vehicle(vehicle_id):
+    user_id = session.get('user_id')
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM Vehicle WHERE vehicle_id = %s", (vehicle_id,))
+    # Delete the vehicle only if it belongs to the logged-in user
+    cursor.execute("DELETE FROM Vehicle WHERE vehicle_id = %s AND user_id = %s", (vehicle_id, user_id))
     conn.commit()
     cursor.close()
     conn.close()

@@ -7,22 +7,24 @@
     <style>
         /* General body and form styling */
         html, body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
             margin: 0;
             padding: 0;
             min-height: 100%;
             display: flex;
             flex-direction: column;
         }
-        
+
         /* Header styling */
         header {
             background-color: #4CAF50;
             color: white;
-            padding: 15px 0;
+            padding: 20px 0;
             text-align: center;
-            font-size: 24px;
+            font-size: 2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 10px 10px;
         }
 
         /* Main content styling */
@@ -34,36 +36,45 @@
         h2 {
             text-align: center;
             margin-top: 30px;
-            font-size: 24px;
+            font-size: 1.75rem;
+            color: #333;
         }
 
         form {
             display: flex;
             justify-content: center;
             margin-top: 20px;
-            padding: 10px;
+            padding: 15px;
             background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
         }
 
         input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 15px;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 25px;
             width: 70%;
             max-width: 400px;
             margin-right: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
         }
 
         button {
-            padding: 10px 15px;
-            font-size: 16px;
+            padding: 15px 20px;
+            font-size: 1rem;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 25px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -74,74 +85,103 @@
         .shop-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 10px;
-            padding: 15px;
+            gap: 20px;
+            padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         /* Card styling */
-.shop-card {
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.3s ease;
-    height: 100%; /* Ensures consistent height */
-}
+        .shop-card {
+            background-color: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+            height: 100%; /* Ensures consistent height */
+        }
 
-.shop-card:hover {
-    transform: translateY(-5px);
-}
+        .shop-card:hover {
+            transform: translateY(-5px);
+        }
 
-/* Image styling for each card */
-.shop-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-bottom: 2px solid #ddd;
-}
+        /* Image styling for each card */
+        .shop-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid #ddd;
+        }
 
-/* Content container to separate content and button */
-.shop-card .content {
-    flex: 1;
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
+        /* Content container to separate content and button */
+        .shop-card .content {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
 
+        .shop-card .content h3 {
+            font-size: 1.25rem;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
 
-/* Styling for Google Maps link */
-.map-link {
-    margin-top: auto;
-    display: block;
-    text-align: center;
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: bold;
-}
+        .shop-card .content p {
+            font-size: 1rem;
+            color: #555;
+            margin: 5px 0;
+        }
 
-.map-link:hover {
-    background-color: #45a049;
-}
+        /* Styling for Google Maps link */
+        .map-link {
+            margin-top: auto;
+            display: block;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
 
+        .map-link:hover {
+            background-color: #45a049;
+        }
 
         /* Footer styling */
         footer {
             background-color: #333;
             color: white;
             text-align: center;
-            padding: 10px;
+            padding: 15px;
             position: relative;
             bottom: 0;
             width: 100%;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .no-results {
+            text-align: center;
+            font-size: 1.25rem;
+            color: #777;
+            margin-top: 20px;
+        }
+
+        .loading-indicator {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: #4CAF50;
         }
     </style>
 </head>
@@ -159,25 +199,26 @@
             <button type="submit">Search</button>
         </form>
 
+        <!-- Loading Indicator -->
+        <div class="loading-indicator" id="loadingIndicator">Loading...</div>
+
         <div class="shop-list">
             {% if mechanics %}
                 {% for mechanic in mechanics %}
-              <div class="shop-card">
-    <img src="{{ url_for('static', filename='images/' + (mechanic.company_image if mechanic.company_image else 'default_image.jpg')) }}" alt="{{ mechanic.name }}">
-    <div class="content">
-        <h3>{{ mechanic.name }}</h3>
-        <p><strong>Working Hours:</strong> {{ mechanic.working_hours }}</p>
-        <p><strong>Service Locations:</strong> {{ mechanic.service_locations }}</p>
-        <p><strong>Contact:</strong> {{ mechanic.contact }}</p>
-        <p><strong>Services:</strong> {{ mechanic.service_descriptions }}</p>
-        {% if mechanic.distance %}
-            <p><strong>Distance:</strong> {{ mechanic.distance }} km</p>
-        {% endif %}
-        
-    </div>
-    <a href="https://www.google.com/maps?q={{ mechanic.latitude }},{{ mechanic.longitude }}" class="map-link" target="_blank">View on Google Maps</a>
-</div>
-
+                    <div class="shop-card">
+                        <img src="{{ url_for('static', filename='images/' + (mechanic.company_image if mechanic.company_image else 'default_image.jpg')) }}" alt="{{ mechanic.name }}">
+                        <div class="content">
+                            <h3>{{ mechanic.name }}</h3>
+                            <p><strong>Working Hours:</strong> {{ mechanic.working_hours }}</p>
+                            <p><strong>Service Locations:</strong> {{ mechanic.service_locations }}</p>
+                            <p><strong>Contact:</strong> {{ mechanic.contact }}</p>
+                            <p><strong>Services:</strong> {{ mechanic.service_descriptions }}</p>
+                            {% if mechanic.distance %}
+                                <p><strong>Distance:</strong> {{ mechanic.distance }} km</p>
+                            {% endif %}
+                        </div>
+                        <a href="https://www.google.com/maps?q={{ mechanic.latitude }},{{ mechanic.longitude }}" class="map-link" target="_blank">View on Google Maps</a>
+                    </div>
                 {% endfor %}
             {% else %}
                 <p class="no-results">No mechanic shops found for the specified location.</p>
@@ -189,6 +230,18 @@
     <footer>
         <p>&copy; 2024 Mechanic Shop Finder. All rights reserved.</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'block';
+
+            // Simulate loading time
+            setTimeout(() => {
+                loadingIndicator.style.display = 'none';
+            }, 2000);
+        });
+    </script>
 
 </body>
 </html>

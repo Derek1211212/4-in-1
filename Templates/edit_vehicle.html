@@ -10,10 +10,7 @@
     <div class="container">
         <h2>Edit Vehicle</h2>
         <form action="{{ url_for('edit_vehicle', vehicle_id=vehicle.vehicle_id) }}" method="POST">
-            <div class="form-group">
-                <label for="customer_id">Customer ID:</label>
-                <input type="number" class="form-control" id="customer_id" name="customer_id" value="{{ vehicle.customer_id }}" required>
-            </div>
+
             <div class="form-group">
                 <label for="make">Make:</label>
                 <input type="text" class="form-control" id="make" name="make" placeholder="e.g. Toyota" value="{{ vehicle.make }}" required>

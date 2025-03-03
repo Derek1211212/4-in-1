@@ -1,295 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Page</title>
-    <style>
-        /* Reset margin and padding */
-        body, h1, h3, p, form {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background-color: #f9fafb;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Navigation bar styles */
-        nav {
-            background-color: #1a202c;
-            color: #fff;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 18px;
-        }
-
-        nav a:hover {
-            text-decoration: underline;
-        }
-
-        /* Footer styling */
-        footer {
-            background-color: #1a202c;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            margin-top: auto;
-            font-size: 14px;
-        }
-
-        /* Container that holds the form and the ads */
-        .container {
-            padding: 20px;
-            flex: 1;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 2rem;
-            color: #2d3748;
-        }
-
-        /* Form container styles */
-        .form-container {
-            margin-bottom: 30px;
-            text-align: center;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            margin-right: 10px;
-            font-weight: bold;
-            color: #4a5568;
-        }
-
-        input[type="text"], select {
-            padding: 10px;
-            margin-right: 10px;
-            border-radius: 4px;
-            border: 1px solid #cbd5e0;
-            width: 250px;
-            max-width: 100%;
-            font-size: 14px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: #3182ce;
-            box-shadow: 0 0 3px rgba(49, 130, 206, 0.5);
-        }
-
-        button {
-            padding: 12px 20px;
-            border-radius: 6px;
-            border: none;
-            background-color: #2b6cb0;
-            color: #fff;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            width: 250px;
-        }
-
-        button:hover {
-            background-color: #2c5282;
-            transform: scale(1.05);
-        }
-
-        /* Grid container for ads */
-        .ads-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Card for individual ad */
-        .card {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            text-align: center;
-            padding: 15px;
-            position: relative;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .card img {
-            width: 100%;
-            height: 160px;
-            object-fit: scale-down;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .card h3 {
-            margin: 10px 0;
-            font-size: 1.2rem;
-            color: #2d3748;
-        }
-
-        .card p {
-            font-size: 1rem;
-            color: #4a5568;
-        }
-
-        .status {
-            font-weight: bold;
-            color: #38a169;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(56, 161, 105, 0.1);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        /* Responsive styling */
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-
-            .ads-list {
-                grid-template-columns: repeat(2, 1fr);
-                padding: 15px;
-            }
-
-            input[type="text"], select {
-                width: 100%;
-            }
-
-            button {
-                width: 100%;
-            }
-        }
-/* Floating action icon styles */
-.floating-icon {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #2b6cb0;
-    color: #fff;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    font-size: 13px;
-    cursor: pointer;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-    animation: bounce 2s infinite;
-    z-index: 1000;
-}
-
-.floating-icon:hover {
-    background-color: #2c5282;
-    transform: scale(1.1);
-}
-
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GearUp - Spare Parts Marketplace</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --secondary: #1e40af;
+      --accent: #f59e0b;
+      --dark: #1e293b;
+      --light: #f8fafc;
     }
-    50% {
-        transform: translateY(-10px);
+
+    /* Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
-.floating-icon i {
-    pointer-events: none; /* Ensures the icon itself doesn't interfere with click events */
-}
+    /* Navigation */
+    nav {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+      padding: 1rem 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--light);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .nav-brand i {
+      color: var(--accent);
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--light);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+    /* Hamburger for Mobile */
+    .hamburger {
+      display: none;
+      font-size: 1.5rem;
+      color: var(--light);
+      cursor: pointer;
+    }
+    /* Mobile Navigation Menu */
+    .mobile-nav {
+      display: none;
+      flex-direction: column;
+      background: linear-gradient(135deg, var(--light) 0%, var(--primary) 100%);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+    }
+    .mobile-nav a {
+      padding: 1rem 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      transition: background 0.3s ease;
+    }
+    .mobile-nav a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
 
-    </style>
+    /* Page Content */
+    .container {
+      padding: 2rem 5%;
+      flex: 1;
+    }
+    .page-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      color: var(--dark);
+    }
+
+    /* Filter Form */
+    .form-container {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      margin: 0 auto 2rem;
+      max-width: 800px;
+    }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .input-group {
+      position: relative;
+    }
+    .input-group i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--dark);
+      opacity: 0.6;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      outline: none;
+    }
+    button[type="submit"] {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Product Cards (Ads List) */
+    .ads-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* Always two columns */
+      gap: 2rem;
+      padding: 2rem 0;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+    .card-img {
+      height: 220px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-img img {
+      max-width: 80%;
+      max-height: 80%;
+      transition: transform 0.3s ease;
+      mix-blend-mode: multiply;
+    }
+    .card:hover .card-img img {
+      transform: scale(1.05);
+    }
+    .card-content {
+      padding: 1.5rem;
+    }
+    .card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+    .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .meta {
+      font-size: 0.9rem;
+      color: var(--dark);
+    }
+    .status {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(245, 158, 11, 0.9);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Floating Action Button */
+    .floating-icon {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    .floating-icon:hover {
+      transform: scale(1.1) rotate(15deg);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Footer */
+    footer {
+      background: var(--dark);
+      color: var(--light);
+      padding: 3rem 5%;
+      margin-top: auto;
+    }
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+    .footer-section h4 {
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+    .footer-links {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-links li {
+      margin-bottom: 0.8rem;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: var(--accent);
+      padding-left: 0.5rem;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 468px) {
+      /* Navigation adjustments */
+      .nav-links {
+        display: none;
+      }
+      .hamburger {
+        display: block;
+      }
+      .mobile-nav {
+        display: none;
+      }
+      /* Keep filter grid as one column for readability */
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+      /* Force ads list to always remain two columns */
+      .ads-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
 </head>
 <body>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/signup">Create Ad(s)</a>
-    </nav>
+  <!-- Navigation -->
+  <nav>
+    <a href="/" class="nav-brand">
+      <i class="fas fa-car"></i> AutoParts Hub
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/signup" class="cta">Create Ad</a>
+    </div>
+    <!-- Hamburger Icon for Mobile -->
+    <div class="hamburger" onclick="toggleMobileNav()">
+      <i class="fas fa-bars"></i>
+    </div>
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-nav" id="mobileNav">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/signup" class="cta">Create Ad</a>
+    </div>
+  </nav>
 
-    <div class="container">
-        <h1>Available Spare Parts</h1>
-        
-        <div class="form-container">
-            <form method="POST" action="/shopping">
-                <label for="location">Enter Location:</label>
-                <input type="text" id="location" name="location" placeholder="Search by city" value="{{ location }}">
-
-                <label for="part_category">Select Category:</label>
-                <select id="part_category" name="part_category">
-                    <option value="">Select Category</option>
-                    <option value="Engine and Related Parts">Engine and Related Parts</option>
-                    <option value="Fuel System">Fuel System</option>
-                    <option value="Exhaust System">Exhaust System</option>
-                    <option value="Cooling System">Cooling System</option>
-                    <option value="Electrical System">Electrical System</option>
-                    <option value="Transmission and Drivetrain">Transmission and Drivetrain</option>
-                </select>
-
-                <label for="part_name">Enter Part Name:</label>
-                <input type="text" id="part_name" name="part_name" placeholder="Search by part name" value="{{ part_name }}">
-
-                <button type="submit">Filter Ads</button>
-            </form>
+  <!-- Main Content Container -->
+  <div class="container">
+    <h1 class="page-title">Discover Quality Auto Parts</h1>
+    
+    <!-- Filter Form -->
+    <div class="form-container">
+      <form method="POST" action="/shopping">
+        <div class="filter-grid">
+          <div class="input-group">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" id="location" name="location" placeholder="Enter location" value="{{ location }}">
+          </div>
+          <div class="input-group">
+            <i class="fas fa-filter"></i>
+            <select id="part_category" name="part_category">
+              <option value="">All Categories</option>
+              <option value="Engine and Related Parts">Engine Parts</option>
+              <option value="Fuel System">Fuel System</option>
+              <option value="Exhaust System">Exhaust System</option>
+              <option value="Cooling System">Cooling System</option>
+              <option value="Electrical System">Electrical System</option>
+              <option value="Transmission and Drivetrain">Drivetrain</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-search"></i>
+            <input type="text" id="part_name" name="part_name" placeholder="Search parts..." value="{{ part_name }}">
+          </div>
         </div>
-
-            <a href="#"><div class="floating-icon" aria-label="Contact Support">
-            <i class="fas fa-question">Support</i>
-    </div></a>
-
-        <div class="ads-list">
-            {% if ads %}
-                {% for ad in ads %}
-                    <div class="card" data-ad-id="{{ ad.ad_id }}">
-                        <a href="{{ url_for('part_details', ad_id=ad.ad_id) }}">
-                            <img src="{{ url_for('static', filename='images/' + ad.image1) }}" alt="Part Image">
-                            <h3>{{ ad.part_name }}</h3>
-                            <p>Price: ₵{{ ad.price }}</p>
-                            <p> <span class="status">{{ ad.status }}</span></p>
-                        </a>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>No ads found matching your criteria.</p>
-            {% endif %}
-        </div>
+        <button type="submit">Search Parts <i class="fas fa-arrow-right"></i></button>
+      </form>
     </div>
 
-    <footer>
-        <p>&copy; 2024 YourCompany. All Rights Reserved.</p>
-    </footer>
+    <!-- Floating WhatsApp Icon -->
+    <a href="#" class="floating-icon">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Ads List (Product Cards) -->
+    <div class="ads-list">
+      {% if ads %}
+        {% for ad in ads %}
+          <div class="card">
+            <a href="{{ url_for('part_details', ad_id=ad.ad_id) }}" class="card-link">
+              <div class="card-img">
+                <img src="{{ url_for('static', filename='images/' + ad.image1) }}" alt="{{ ad.part_name }}" loading="lazy">
+                <span class="status">{{ ad.status }}</span>
+              </div>
+              <div class="card-content">
+                <h3>{{ ad.part_name }}</h3>
+                <p class="price">₵{{ ad.price }}</p>
+                <div class="meta">
+                  <span class="location"><i class="fas fa-map-marker-alt"></i> {{ ad.location }}</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <i class="fas fa-search-minus"></i>
+          <h3>No matching parts found</h3>
+          <p>Try adjusting your search filters</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>AutoParts Hub</h4>
+        <p>Your trusted marketplace for quality automotive parts and accessories</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/careers">Careers</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links">
+          <li><i class="fas fa-phone"></i> +233 123 456 789</li>
+          <li><i class="fas fa-envelope"></i> support@autoparts.com</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle mobile navigation menu
+    function toggleMobileNav() {
+      const mobileNav = document.getElementById('mobileNav');
+      if (mobileNav.style.display === "flex") {
+        mobileNav.style.display = "none";
+      } else {
+        mobileNav.style.display = "flex";
+      }
+    }
+    // Optional: Close mobile nav when a link is clicked
+    document.querySelectorAll('.mobile-nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('mobileNav').style.display = "none";
+      });
+    });
+  </script>
 </body>
 </html>
